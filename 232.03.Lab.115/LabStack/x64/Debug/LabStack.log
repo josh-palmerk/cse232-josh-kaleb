@@ -1,0 +1,34 @@
+﻿  testStack.cpp
+C:\Users\scrib\dev\cse232\232.03.Lab.115\vector.h(559,21): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'testStack.cpp')
+      C:\Users\scrib\dev\cse232\232.03.Lab.115\vector.h(559,21):
+      the template instantiation context (the oldest one first) is
+          C:\Users\scrib\dev\cse232\232.03.Lab.115\testStack.h(101,26):
+          see reference to class template instantiation 'custom::stack<Spy,custom::vector<T,std::allocator<T>>>' being compiled
+          with
+          [
+              T=Spy
+          ]
+          C:\Users\scrib\dev\cse232\232.03.Lab.115\stack.h(116,14):
+          see reference to class template instantiation 'custom::vector<T,std::allocator<T>>' being compiled
+          with
+          [
+              T=Spy
+          ]
+          C:\Users\scrib\dev\cse232\232.03.Lab.115\vector.h(538,1):
+          while compiling class template member function 'custom::vector<T,std::allocator<T>> &custom::vector<T,std::allocator<T>>::operator =(const custom::vector<T,std::allocator<T>> &)'
+          with
+          [
+              T=Spy
+          ]
+              C:\Users\scrib\dev\cse232\232.03.Lab.115\testVector.h(1377,13):
+              see the first reference to 'custom::vector<T,std::allocator<T>>::operator =' in 'TestVector::test_assign_empty'
+          with
+          [
+              T=Spy
+          ]
+  
+C:\Users\scrib\dev\cse232\232.03.Lab.115\vector.h(566,21): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'testStack.cpp')
+  
+  LabStack.vcxproj -> C:\Users\scrib\dev\cse232\232.03.Lab.115\x64\Debug\LabStack.exe
