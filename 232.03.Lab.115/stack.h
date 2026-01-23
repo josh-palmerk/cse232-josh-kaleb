@@ -40,15 +40,15 @@ public:
    // Construct
    //
    
-   stack()                       { /*container.resize(7);*/ }
+   stack()                                   { }
    stack(const stack <T> &  rhs) 
-       : container(rhs.container) { }
+       : container(rhs.container)            { }
    stack(      stack <T> && rhs) 
        : container(std::move(rhs.container)) { }
 
-   stack(const Container &  rhs) { container.resize(7); }
-   stack(      Container && rhs) { container.resize(7); }
-   ~stack()                      {                      }     
+   stack(const Container &  rhs) { container = rhs;            }
+   stack(      Container && rhs) { container = std::move(rhs); }
+   ~stack()                      {                             }     
    
    //
    // Assign
