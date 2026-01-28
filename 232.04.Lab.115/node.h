@@ -60,12 +60,14 @@ public:
 template <class T>
 inline Node<T>* copy(const Node<T>* pSource)
 {
-   if (pSource == nullptr)
+   if (!pSource)
       return nullptr;
+
    Node<T>* pNewHead = new Node<T>(pSource->data);
    Node<T>* pCurrentNew = pNewHead;
    const Node<T>* pCurrentSource = pSource->pNext;
-   while (pCurrentSource != nullptr)
+
+   while (pCurrentSource)
    {
       Node<T>* pNewNode = new Node<T>(pCurrentSource->data);
       pCurrentNew->pNext = pNewNode;
@@ -85,7 +87,7 @@ inline Node<T>* copy(const Node<T>* pSource)
  *   COST   : O(n)
  **********************************************/
 template <class T>
-inline void assign(Node <T> * & pDestination, const Node <T> * pSource)
+inline void assign(Node<T>*& pDestination, const Node<T>* pSource)
 {
    
 }
@@ -98,7 +100,7 @@ inline void assign(Node <T> * & pDestination, const Node <T> * pSource)
 template <class T>
 inline void swap(Node <T>* &pLHS, Node <T>* &pRHS)
 {
-	//pLHS = pRHS;
+	std::swap(pLHS, pRHS);
 }
 
 /***********************************************
@@ -140,11 +142,31 @@ inline Node <T> * remove(const Node <T> * pRemove)
  *   COST    : O(1)
  **********************************************/
 template <class T>
-inline Node <T> * insert(Node <T> * pCurrent,
-                  const T & t,
-                  bool after = false)
+inline Node<T>* insert(Node<T>* pCurrent, const T& t, bool after = false)
 {
-   return new Node<T>();
+   Node<T>* pNew = new Node<T>(t);
+
+   if (!pCurrent)
+      return pNew;
+
+   if (after)
+   {
+      pNew->pPrev = pCurrent;
+      pNew->pNext = pCurrent->pNext;
+      if (pCurrent->pNext)
+         pCurrent->pNext->pPrev = pNew;
+      pCurrent->pNext = pNew;
+   }
+   else
+   {
+      pNew->pNext = pCurrent;
+      pNew->pPrev = pCurrent->pPrev;
+      if (pCurrent->pPrev)
+         pCurrent->pPrev->pNext = pNew;
+      pCurrent->pPrev = pNew;
+   }
+
+   return pNew;
 }
 
 /******************************************************
