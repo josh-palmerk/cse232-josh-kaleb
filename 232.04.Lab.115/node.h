@@ -14,7 +14,7 @@
  *        Node         : A class representing a Node
  *    Additionally, it will contain a few functions working on Node
  * Author
- *    <your names here>
+ *    JOsh, Kaleb, Spencer
  ************************************************************************/
 
 #pragma once
@@ -99,7 +99,7 @@ inline void assign(Node <T> * & pDestination, const Node <T> * pSource)
 template <class T>
 inline void swap(Node <T>* &pLHS, Node <T>* &pRHS)
 {
-   
+	//pLHS = pRHS;
 }
 
 /***********************************************
@@ -112,8 +112,20 @@ inline void swap(Node <T>* &pLHS, Node <T>* &pRHS)
 template <class T>
 inline Node <T> * remove(const Node <T> * pRemove) 
 {
-   
-   return new Node<T>;
+	if (pRemove == nullptr) //null check
+		return nullptr;
+
+	Node<T>* parent = (pRemove->pPrev) ? pRemove->pPrev : pRemove->pNext;
+
+	if (pRemove->pPrev != nullptr) // if there is a previous node
+		pRemove->pPrev->pNext = pRemove->pNext;
+
+
+	if (pRemove->pNext != nullptr)
+		pRemove->pNext->pPrev = pRemove->pPrev;
+
+	delete pRemove; //free memory
+	return parent;
 }
 
 
@@ -147,7 +159,9 @@ inline Node <T> * insert(Node <T> * pCurrent,
 template <class T>
 inline size_t size(const Node <T> * pHead)
 {
-   return 99;
+    if (pHead == nullptr)
+		return 0;
+	return 1 + size(pHead->pNext);
 }
 
 /***********************************************
@@ -161,7 +175,16 @@ inline size_t size(const Node <T> * pHead)
 template <class T>
 inline std::ostream & operator << (std::ostream & out, const Node <T> * pHead)
 {
-   return out;
+	//out << "[";
+	//const Node<T>* pCurrent = pHead;
+	//while (pCurrent != nullptr)
+	//{
+	//	out << pCurrent->data;
+	//	pCurrent = pCurrent->pNext;
+	//	if (pCurrent != nullptr)
+	//		out << ", "; // AI autocompleted section
+	//}
+    return out;
 }
 
 /*****************************************************
@@ -174,7 +197,12 @@ inline std::ostream & operator << (std::ostream & out, const Node <T> * pHead)
 template <class T>
 inline void clear(Node <T> * & pHead)
 {
-   
+   while (pHead != nullptr)
+   {
+      Node<T> * pDelete = pHead;
+      pHead = pHead->pNext;
+      delete pDelete;
+   }
 }
 
 

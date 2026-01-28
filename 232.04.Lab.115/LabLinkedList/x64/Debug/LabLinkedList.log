@@ -1,0 +1,20 @@
+﻿  testNode.cpp
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.04.Lab.115\testNode.h(83,17): warning C4312: 'type cast': conversion from 'unsigned int' to 'Node<Spy> *' of greater size
+  (compiling source file 'testNode.cpp')
+  
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.04.Lab.115\testNode.h(84,17): warning C4312: 'type cast': conversion from 'unsigned int' to 'Node<Spy> *' of greater size
+  (compiling source file 'testNode.cpp')
+  
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.04.Lab.115\testNode.h(104,17): warning C4312: 'type cast': conversion from 'unsigned int' to 'Node<Spy> *' of greater size
+  (compiling source file 'testNode.cpp')
+  
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.04.Lab.115\testNode.h(105,17): warning C4312: 'type cast': conversion from 'unsigned int' to 'Node<Spy> *' of greater size
+  (compiling source file 'testNode.cpp')
+  
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.04.Lab.115\testNode.h(131,17): warning C4312: 'type cast': conversion from 'unsigned int' to 'Node<Spy> *' of greater size
+  (compiling source file 'testNode.cpp')
+  
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.04.Lab.115\testNode.h(132,17): warning C4312: 'type cast': conversion from 'unsigned int' to 'Node<Spy> *' of greater size
+  (compiling source file 'testNode.cpp')
+  
+  LabLinkedList.vcxproj -> C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.04.Lab.115\x64\Debug\LabLinkedList.exe
