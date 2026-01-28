@@ -36,23 +36,9 @@ public:
    //
    // Construct
    //
-   //
-   // Construct
-   //
-
-   Node() 
-   { 
-      pNext = pPrev = this;
-   }
-   Node(const T& data) 
-   {
-      pNext = pPrev = this;
-   }
-
-   Node(T&& data) 
-   {
-      pNext = pPrev = this;
-   }
+   Node(): data(), pNext(nullptr), pPrev(nullptr) {}
+   Node(const T& data): data(data), pNext(nullptr), pPrev(nullptr) {}
+   Node(T&& data): data(std::move(data)), pNext(nullptr), pPrev(nullptr) {}
 
    //
    // Member variables
@@ -72,9 +58,22 @@ public:
  *   COST   : O(n)
  **********************************************/
 template <class T>
-inline Node <T> * copy(const Node <T> * pSource) 
+inline Node<T>* copy(const Node<T>* pSource)
 {
-   return new Node<T>;
+   if (pSource == nullptr)
+      return nullptr;
+   Node<T>* pNewHead = new Node<T>(pSource->data);
+   Node<T>* pCurrentNew = pNewHead;
+   const Node<T>* pCurrentSource = pSource->pNext;
+   while (pCurrentSource != nullptr)
+   {
+      Node<T>* pNewNode = new Node<T>(pCurrentSource->data);
+      pCurrentNew->pNext = pNewNode;
+      pNewNode->pPrev = pCurrentNew;
+      pCurrentNew = pNewNode;
+      pCurrentSource = pCurrentSource->pNext;
+   }
+   return pNewHead;
 }
 
 /***********************************************
@@ -204,5 +203,3 @@ inline void clear(Node <T> * & pHead)
       delete pDelete;
    }
 }
-
-
