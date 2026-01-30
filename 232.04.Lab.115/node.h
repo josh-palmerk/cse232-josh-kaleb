@@ -90,6 +90,44 @@ template <class T>
 inline void assign(Node<T>*& pDestination, const Node<T>* pSource)
 {
    
+   Node<T>* pD = pDestination;
+   const Node<T>* pS = pSource;
+   Node<T>* p = nullptr;
+
+   while (pS && pD)
+   {
+      pD->data = pS->data;
+      p = pD;
+      pD = pD->pNext;
+      pS = pS->pNext;
+   }
+
+   while (pS)
+   {
+      Node<T>* pNew = new Node<T>(pS->data);
+
+      pNew->pPrev = p;
+
+      if (p)
+         p->pNext = pNew;
+      else
+         pDestination = pNew;
+
+      p = pNew;
+      pS = pS->pNext;
+   }
+
+   if (p)
+      p->pNext = nullptr;
+   else
+      pDestination = nullptr;
+
+   while (pD)
+   {
+      Node<T>* pDelete = pD;
+      pD = pD->pNext;
+      delete pDelete;
+   }
 }
 
 /***********************************************
