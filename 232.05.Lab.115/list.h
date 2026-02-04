@@ -14,7 +14,7 @@
  *        List         : A class that represents a List
  *        ListIterator : An iterator through List
  * Author
- *    <your names here>
+ *    JOsh, Kaleb, Spencer
  ************************************************************************/
 
 #pragma once
@@ -127,8 +127,8 @@ public:
    // Status
    //
    
-   bool empty()  const { return true; }
-   size_t size() const { return 98;   }
+   bool empty()  const { return (pHead != nullptr); }
+   size_t size() const { return numElements;   }
 
 private:
    // nested linked list class
@@ -300,6 +300,16 @@ list <T, A> ::list(list <T, A>&& rhs, const A& a) :
 template <typename T, typename A>
 list <T, A>& list <T, A> :: operator = (list <T, A> && rhs)
 {
+    if (this != &rhs)
+    {
+        clear(); // Clear existing elements
+        pHead = rhs.pHead;
+        pTail = rhs.pTail;
+        numElements = rhs.numElements;
+        rhs.pHead = nullptr;
+        rhs.pTail = nullptr;
+        rhs.numElements = 0;
+	}
    return *this;
 }
 
@@ -313,6 +323,16 @@ list <T, A>& list <T, A> :: operator = (list <T, A> && rhs)
 template <typename T, typename A>
 list <T, A> & list <T, A> :: operator = (list <T, A> & rhs)
 {
+   if (this != &rhs)
+   {
+       clear(); // Clear existing elements
+       Node* current = rhs.pHead;
+       while (current != nullptr)
+       {
+           push_back(current->data);
+           current = current->pNext;
+       }
+   }
    return *this;
 }
 
@@ -339,7 +359,12 @@ list <T, A>& list <T, A> :: operator = (const std::initializer_list<T>& rhs)
 template <typename T, typename A>
 void list <T, A> :: clear()
 {
-
+    while (pHead != nullptr)
+    {
+        Node* temp = pHead;
+        pHead = pHead->pNext;
+        delete temp;
+	}
 }
 
 /*********************************************
@@ -352,13 +377,34 @@ void list <T, A> :: clear()
 template <typename T, typename A>
 void list <T, A> :: push_back(const T & data)
 {
-
+    if (pTail == nullptr)
+    {
+        pTail = new Node(data);
+        pHead = pTail;
+    }
+    else
+    {
+        Node* newNode = new Node(data);
+        newNode->pPrev = pTail;
+        pTail->pNext = newNode;
+        pTail = newNode;
+    }
 }
 
 template <typename T, typename A>
 void list <T, A> ::push_back(T && data)
 {
-
+    if (pTail == nullptr)
+    {
+        pTail = new Node(std::move(data));
+        pHead = pTail;
+    }
+    else
+    {
+        Node* newNode = new Node(std::move(data));
+        newNode->pPrev = pTail;
+        pTail->pNext = newNode;
+    }
 }
 
 /*********************************************
@@ -371,13 +417,35 @@ void list <T, A> ::push_back(T && data)
 template <typename T, typename A>
 void list <T, A> :: push_front(const T & data)
 {
-
+    if (pHead == nullptr)
+    {
+        pHead = new Node(data);
+        pTail = pHead;
+    }
+    else
+    {
+        Node* newNode = new Node(data);
+        newNode->pNext = pHead;
+        pHead->pPrev = newNode;
+        pHead = newNode;
+	}
 }
 
 template <typename T, typename A>
 void list <T, A> ::push_front(T && data)
 {
-
+    if (pHead == nullptr)
+    {
+        pHead = new Node(std::move(data));
+        pTail = pHead;
+    }
+    else
+    {
+        Node* newNode = new Node(std::move(data));
+        newNode->pNext = pHead;
+        pHead->pPrev = newNode;
+        pHead = newNode;
+	}
 }
 
 
@@ -391,7 +459,16 @@ void list <T, A> ::push_front(T && data)
 template <typename T, typename A>
 void list <T, A> ::pop_back()
 {
-
+    if (pTail != nullptr)
+    {
+        Node* temp = pTail;
+        pTail = pTail->pPrev;
+        if (pTail != nullptr)
+            pTail->pNext = nullptr;
+        else
+            pHead = nullptr; // List is now empty
+        delete temp;
+    }
 }
 
 /*********************************************
@@ -404,7 +481,16 @@ void list <T, A> ::pop_back()
 template <typename T, typename A>
 void list <T, A> ::pop_front()
 {
-
+    if (pHead != nullptr)
+    {
+        Node* temp = pHead;
+        pHead = pHead->pNext;
+        if (pHead != nullptr)
+            pHead->pPrev = nullptr;
+        else
+            pTail = nullptr; // List is now empty
+        delete temp;
+	}
 }
 
 /*********************************************

@@ -1,0 +1,58 @@
+﻿  testList.cpp
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(136,17): warning C4312: 'type cast': conversion from 'unsigned int' to 'custom::list<Spy,std::allocator<T>>::Node *' of greater size
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(136,17): warning C4312:         with
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(136,17): warning C4312:         [
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(136,17): warning C4312:             T=Spy
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(136,17): warning C4312:         ]
+  (compiling source file 'testList.cpp')
+  
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(137,17): warning C4312: 'type cast': conversion from 'unsigned int' to 'custom::list<Spy,std::allocator<T>>::Node *' of greater size
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(137,17): warning C4312:         with
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(137,17): warning C4312:         [
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(137,17): warning C4312:             T=Spy
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(137,17): warning C4312:         ]
+  (compiling source file 'testList.cpp')
+  
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(157,17): warning C4312: 'type cast': conversion from 'unsigned int' to 'custom::list<Spy,std::allocator<T>>::Node *' of greater size
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(157,17): warning C4312:         with
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(157,17): warning C4312:         [
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(157,17): warning C4312:             T=Spy
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(157,17): warning C4312:         ]
+  (compiling source file 'testList.cpp')
+  
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(158,17): warning C4312: 'type cast': conversion from 'unsigned int' to 'custom::list<Spy,std::allocator<T>>::Node *' of greater size
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(158,17): warning C4312:         with
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(158,17): warning C4312:         [
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(158,17): warning C4312:             T=Spy
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(158,17): warning C4312:         ]
+  (compiling source file 'testList.cpp')
+  
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(178,17): warning C4312: 'type cast': conversion from 'unsigned int' to 'custom::list<Spy,std::allocator<T>>::Node *' of greater size
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(178,17): warning C4312:         with
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(178,17): warning C4312:         [
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(178,17): warning C4312:             T=Spy
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(178,17): warning C4312:         ]
+  (compiling source file 'testList.cpp')
+  
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(179,17): warning C4312: 'type cast': conversion from 'unsigned int' to 'custom::list<Spy,std::allocator<T>>::Node *' of greater size
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(179,17): warning C4312:         with
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(179,17): warning C4312:         [
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(179,17): warning C4312:             T=Spy
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(179,17): warning C4312:         ]
+  (compiling source file 'testList.cpp')
+  
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(224,17): warning C4312: 'type cast': conversion from 'unsigned int' to 'custom::list<Spy,std::allocator<T>>::Node *' of greater size
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(224,17): warning C4312:         with
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(224,17): warning C4312:         [
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(224,17): warning C4312:             T=Spy
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(224,17): warning C4312:         ]
+  (compiling source file 'testList.cpp')
+  
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(225,17): warning C4312: 'type cast': conversion from 'unsigned int' to 'custom::list<Spy,std::allocator<T>>::Node *' of greater size
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(225,17): warning C4312:         with
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(225,17): warning C4312:         [
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(225,17): warning C4312:             T=Spy
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\testList.h(225,17): warning C4312:         ]
+  (compiling source file 'testList.cpp')
+  
+  LabList.vcxproj -> C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.05.Lab.115\x64\Debug\LabList.exe
