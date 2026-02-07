@@ -5,6 +5,10 @@
     {
       "AbsoluteMoniker": "D:0:0:{6C03E98E-5847-4D1E-860C-3FB4CCFE088F}|LabList.vcxproj|C:\\Users\\scrib\\Documents\\GitHub\\cse232-josh-kaleb\\232.05.Lab.115\\list.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{6C03E98E-5847-4D1E-860C-3FB4CCFE088F}|LabList.vcxproj|solutionrelative:list.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C03E98E-5847-4D1E-860C-3FB4CCFE088F}|LabList.vcxproj|C:\\Users\\scrib\\Documents\\GitHub\\cse232-josh-kaleb\\232.05.Lab.115\\testList.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{6C03E98E-5847-4D1E-860C-3FB4CCFE088F}|LabList.vcxproj|solutionrelative:testList.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,8 +18,21 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "testList.h",
+              "DocumentMoniker": "C:\\Users\\scrib\\Documents\\GitHub\\cse232-josh-kaleb\\232.05.Lab.115\\testList.h",
+              "RelativeDocumentMoniker": "testList.h",
+              "ToolTip": "C:\\Users\\scrib\\Documents\\GitHub\\cse232-josh-kaleb\\232.05.Lab.115\\testList.h",
+              "RelativeToolTip": "testList.h",
+              "ViewState": "AgIAAIIMAAAAAAAAAAAIwJcMAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-02-07T21:32:43.385Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
@@ -24,7 +41,7 @@
               "RelativeDocumentMoniker": "list.h",
               "ToolTip": "C:\\Users\\scrib\\Documents\\GitHub\\cse232-josh-kaleb\\232.05.Lab.115\\list.h",
               "RelativeToolTip": "list.h",
-              "ViewState": "AgIAADAAAAAAAAAAAAAuwDgAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAFEAAAAAAAAAAAD4v2QAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2026-02-07T17:15:14.062Z",
               "EditorCaption": ""
