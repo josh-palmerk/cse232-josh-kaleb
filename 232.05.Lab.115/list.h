@@ -172,15 +172,13 @@ public:
    {
       pNext = pPrev = nullptr;
    }
-   Node(const T& data)
+   Node(const T& data) : data(data)
    {
       pNext = pPrev = nullptr;
-      this->data = data;
    }
-   Node(T&& data)
+   Node(T&& data) : data(std::move(data))
    {
       pNext = pPrev = nullptr;
-      this->data = std::move(data);
    }
 
    //
@@ -208,7 +206,7 @@ public:
    // constructors, destructors, and assignment operator
 	iterator() : p(nullptr)
    {
-      //p = new list <T, A> ::Node;
+       p = nullptr;
    }
    iterator(Node * pRHS)
    {
@@ -220,7 +218,7 @@ public:
    }
    iterator & operator = (const iterator & rhs)
    {
-	  p = rhs.p;
+	   p = rhs.p;
       return *this;
    }
    
@@ -497,14 +495,14 @@ void list <T, A> ::push_back(T && data)
 template <typename T, typename A>
 void list <T, A> :: push_front(const T & data)
 {
-    if (pHead == nullptr)
+    Node* newNode = new Node(data);
+   
+    if (!pHead)
     {
-        pHead = new Node(data);
-        pTail = pHead;
+       pHead = pTail = newNode;
     }
     else
     {
-        Node* newNode = new Node(data);
         newNode->pNext = pHead;
         pHead->pPrev = newNode;
         pHead = newNode;
@@ -515,19 +513,19 @@ void list <T, A> :: push_front(const T & data)
 template <typename T, typename A>
 void list <T, A> ::push_front(T && data)
 {
-    if (pHead == nullptr)
+    Node* newNode = new Node(std::move(data));
+   
+    if (!pHead)
     {
-        pHead = new Node(std::move(data));
-        pTail = pHead;
+        pHead = pTail = newNode;
     }
     else
     {
-        Node* newNode = new Node(std::move(data));
         newNode->pNext = pHead;
         pHead->pPrev = newNode;
         pHead = newNode;
-	}
-	numElements++;
+	 }
+	 numElements++;
 }
 
 
@@ -588,9 +586,8 @@ void list <T, A> ::pop_front()
 template <typename T, typename A>
 T & list <T, A> :: front()
 {
-	if (pHead == nullptr) // Ensure the list is not empty
-        return *(new T); // Return a default-constructed T or throw an exception
-	return pHead->data;
+   static T temp;
+   return (pHead ? pHead->data : temp);
 }
 
 /*********************************************
@@ -603,9 +600,8 @@ T & list <T, A> :: front()
 template <typename T, typename A>
 T & list <T, A> :: back()
 {
-    if (pHead == nullptr) // Ensure the list is not empty
-        return *(new T); // Return a default-constructed T or throw an exception	return pTail->data;
-	return pTail->data;
+   static T temp;
+   return (pTail ? pTail->data : temp);
 }
 
 
@@ -690,7 +686,7 @@ typename list <T, A> ::iterator list <T, A> ::insert(list <T, A> ::iterator it,
 {
     if (it.p == nullptr)
     {
-        push_back(data);
+        push_back(std::move(data));
         return iterator(pTail);
     }
 
