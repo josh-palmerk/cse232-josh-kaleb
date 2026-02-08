@@ -297,10 +297,26 @@ list <T, A> ::list(size_t num, const T & t, const A& a)
 template <typename T, typename A>
 list <T, A> ::list(size_t num, const A& a) 
 {
-    pHead = pTail = nullptr;
-    numElements = 0;
-    for (size_t i = 0; i < num; i++)
-        push_back(T());  // default construct
+   pHead = pTail = nullptr;
+   numElements = 0;
+
+   for (size_t i = 0; i < num; i++)
+   {
+       Node* n = new Node(); // default construct data ONLY
+
+       if (!pHead)
+       {
+           pHead = pTail = n;
+       }
+       else
+       {
+           n->pPrev = pTail;
+           pTail->pNext = n;
+           pTail = n;
+       }
+
+       numElements++;
+   }
 }
 
 /*****************************************
