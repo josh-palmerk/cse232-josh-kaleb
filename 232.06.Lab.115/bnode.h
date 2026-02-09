@@ -185,7 +185,18 @@ inline void swap(BNode <T>*& pLHS, BNode <T>*& pRHS)
 template <class T>
 BNode <T> * copy(const BNode <T> * pSrc) 
 {
-   return new BNode<T>;
+	if (pSrc == nullptr)
+		return nullptr;
+	BNode<T>* pDest = new BNode<T>(pSrc->data);
+	pDest->pLeft = copy(pSrc->pLeft);
+	pDest->pRight = copy(pSrc->pRight);
+
+	//properly assign parent pointers
+	if (pDest->pLeft)
+		pDest->pLeft->pParent = pDest;
+	if (pDest->pRight)
+		pDest->pRight->pParent = pDest;
+	return pDest;
 }
 
 /**********************************************

@@ -1,1 +1,29 @@
-﻿  LabBinaryTree.vcxproj -> C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.06.Lab.115\x64\Debug\LabBinaryTree.exe
+﻿  testBNode.cpp
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.06.Lab.115\testBNode.h(88,20): warning C4312: 'type cast': conversion from 'unsigned int' to 'BNode<Spy> *' of greater size
+  (compiling source file 'testBNode.cpp')
+  
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.06.Lab.115\testBNode.h(89,20): warning C4312: 'type cast': conversion from 'unsigned int' to 'BNode<Spy> *' of greater size
+  (compiling source file 'testBNode.cpp')
+  
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.06.Lab.115\testBNode.h(90,20): warning C4312: 'type cast': conversion from 'unsigned int' to 'BNode<Spy> *' of greater size
+  (compiling source file 'testBNode.cpp')
+  
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.06.Lab.115\testBNode.h(115,20): warning C4312: 'type cast': conversion from 'unsigned int' to 'BNode<Spy> *' of greater size
+  (compiling source file 'testBNode.cpp')
+  
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.06.Lab.115\testBNode.h(116,20): warning C4312: 'type cast': conversion from 'unsigned int' to 'BNode<Spy> *' of greater size
+  (compiling source file 'testBNode.cpp')
+  
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.06.Lab.115\testBNode.h(117,20): warning C4312: 'type cast': conversion from 'unsigned int' to 'BNode<Spy> *' of greater size
+  (compiling source file 'testBNode.cpp')
+  
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.06.Lab.115\testBNode.h(145,20): warning C4312: 'type cast': conversion from 'unsigned int' to 'BNode<Spy> *' of greater size
+  (compiling source file 'testBNode.cpp')
+  
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.06.Lab.115\testBNode.h(146,20): warning C4312: 'type cast': conversion from 'unsigned int' to 'BNode<Spy> *' of greater size
+  (compiling source file 'testBNode.cpp')
+  
+C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.06.Lab.115\testBNode.h(147,20): warning C4312: 'type cast': conversion from 'unsigned int' to 'BNode<Spy> *' of greater size
+  (compiling source file 'testBNode.cpp')
+  
+  LabBinaryTree.vcxproj -> C:\Users\scrib\Documents\GitHub\cse232-josh-kaleb\232.06.Lab.115\x64\Debug\LabBinaryTree.exe
