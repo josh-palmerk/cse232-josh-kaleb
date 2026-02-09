@@ -140,7 +140,12 @@ void addRight(BNode <T>* pNode, T && t)
 template <class T>
 void clear(BNode <T> * & pThis)
 {
-
+	if (pThis == nullptr)
+		return;
+	clear(pThis->pLeft);
+	clear(pThis->pRight);
+	delete pThis;
+	pThis = nullptr;
 }
 
 /***********************************************
@@ -151,7 +156,11 @@ void clear(BNode <T> * & pThis)
 template <class T>
 inline void swap(BNode <T>*& pLHS, BNode <T>*& pRHS)
 {
-
+	if (pLHS == pRHS)
+		return;
+	BNode<T>* pTemp = pLHS;
+	pLHS = pRHS;
+	pRHS = pTemp;
 }
 
 /**********************************************

@@ -7,12 +7,12 @@
       "RelativeMoniker": "D:0:0:{47D0F9DF-BD6E-4456-989B-9E8F23C492C3}|LabBinaryTree.vcxproj|solutionrelative:bnode.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{47D0F9DF-BD6E-4456-989B-9E8F23C492C3}|LabBinaryTree.vcxproj|C:\\Users\\scrib\\Documents\\GitHub\\cse232-josh-kaleb\\232.06.Lab.115\\spy.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{47D0F9DF-BD6E-4456-989B-9E8F23C492C3}|LabBinaryTree.vcxproj|solutionrelative:spy.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{47D0F9DF-BD6E-4456-989B-9E8F23C492C3}|LabBinaryTree.vcxproj|C:\\Users\\scrib\\Documents\\GitHub\\cse232-josh-kaleb\\232.06.Lab.115\\testBNode.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{47D0F9DF-BD6E-4456-989B-9E8F23C492C3}|LabBinaryTree.vcxproj|solutionrelative:testBNode.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{47D0F9DF-BD6E-4456-989B-9E8F23C492C3}|LabBinaryTree.vcxproj|C:\\Users\\scrib\\Documents\\GitHub\\cse232-josh-kaleb\\232.06.Lab.115\\spy.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{47D0F9DF-BD6E-4456-989B-9E8F23C492C3}|LabBinaryTree.vcxproj|solutionrelative:spy.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,7 +26,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "spy.h",
               "DocumentMoniker": "C:\\Users\\scrib\\Documents\\GitHub\\cse232-josh-kaleb\\232.06.Lab.115\\spy.h",
               "RelativeDocumentMoniker": "spy.h",
@@ -34,18 +34,17 @@
               "RelativeToolTip": "spy.h",
               "ViewState": "AgIAALYAAAAAAAAAAAAIwMcAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-02-09T20:22:13.664Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-09T20:22:13.664Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "testBNode.h",
               "DocumentMoniker": "C:\\Users\\scrib\\Documents\\GitHub\\cse232-josh-kaleb\\232.06.Lab.115\\testBNode.h",
               "RelativeDocumentMoniker": "testBNode.h",
               "ToolTip": "C:\\Users\\scrib\\Documents\\GitHub\\cse232-josh-kaleb\\232.06.Lab.115\\testBNode.h",
               "RelativeToolTip": "testBNode.h",
-              "ViewState": "AgIAACIBAAAAAAAAAAD4vyYBAAAlAAAAAAAAAA==",
+              "ViewState": "AgIAAJEBAAAAAAAAAAD4vyYBAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2026-02-09T20:03:51.897Z",
               "EditorCaption": ""
@@ -56,9 +55,9 @@
               "Title": "bnode.h",
               "DocumentMoniker": "C:\\Users\\scrib\\Documents\\GitHub\\cse232-josh-kaleb\\232.06.Lab.115\\bnode.h",
               "RelativeDocumentMoniker": "bnode.h",
-              "ToolTip": "C:\\Users\\scrib\\Documents\\GitHub\\cse232-josh-kaleb\\232.06.Lab.115\\bnode.h",
-              "RelativeToolTip": "bnode.h",
-              "ViewState": "AgIAALMAAAAAAAAAAAAAAL8AAAAAAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\scrib\\Documents\\GitHub\\cse232-josh-kaleb\\232.06.Lab.115\\bnode.h*",
+              "RelativeToolTip": "bnode.h*",
+              "ViewState": "AgIAAJIAAAAAAAAAAAAAAKIAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2026-02-09T19:42:03.323Z",
               "EditorCaption": ""
