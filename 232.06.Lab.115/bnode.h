@@ -38,16 +38,15 @@ public:
    {
        pLeft = pRight = pParent = nullptr;
    }
-   BNode(const T &  t) 
+   
+   BNode(const T &  t) : data(t)
    {
-	   this->data = t;
-       pLeft = pRight = pParent = nullptr; //something still wrong here
-       
+      pLeft = pRight = pParent = nullptr; //something still wrong here
    }
-   BNode(T && t) 
+   
+   BNode(T && t) : data(std::move(t))
    {
-	   this->data = std::move(t);
-       pLeft = pRight = pParent = nullptr;
+      pLeft = pRight = pParent = nullptr;
    }
 
    //
