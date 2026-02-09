@@ -14,7 +14,7 @@
  *        BNode         : A class representing a BNode
  *    Additionally, it will contain a few functions working on Node
  * Author
- *    <your names here>
+ *    Josh, Kaleb, Spencer
  ************************************************************************/
 
 #pragma once
@@ -36,15 +36,18 @@ public:
    //
    BNode()
    {
-      pLeft = pRight = this;
+       pLeft = pRight = pParent = nullptr;
    }
    BNode(const T &  t) 
    {
-      pLeft = pRight = this;
+	   this->data = t;
+       pLeft = pRight = pParent = nullptr; //something still wrong here
+       
    }
    BNode(T && t) 
    {
-      pLeft = pRight = this;
+	   this->data = std::move(t);
+       pLeft = pRight = pParent = nullptr;
    }
 
    //
@@ -63,7 +66,10 @@ public:
 template <class T>
 inline size_t size(const BNode <T> * p)
 {
-   return 99;
+    if (p == nullptr)
+        return 0;
+    else
+		return 1 + size(p->pLeft) + size(p->pRight);
 }
 
 
@@ -74,7 +80,10 @@ inline size_t size(const BNode <T> * p)
 template <class T>
 inline void addLeft(BNode <T> * pNode, BNode <T> * pAdd)
 {
-
+    if (pNode == nullptr || pAdd == nullptr)
+		return;
+    pNode->pLeft = pAdd;
+	pAdd->pParent = pNode;
 }
 
 /******************************************************
@@ -94,6 +103,11 @@ inline void addRight (BNode <T> * pNode, BNode <T> * pAdd)
 template <class T>
 inline void addLeft (BNode <T> * pNode, const T & t) 
 {
+	if (pNode == nullptr)
+		return;
+	BNode<T>* pAdd = new BNode<T>(t);
+	pNode->pLeft = pAdd;
+	pAdd->pParent = pNode;
 
 }
 
@@ -160,5 +174,31 @@ BNode <T> * copy(const BNode <T> * pSrc)
 template <class T>
 void assign(BNode <T> * & pDest, const BNode <T>* pSrc)
 {
+	// If the source is null, then we need to clear the destination
+	if (pSrc == nullptr)
+	{
+		clear(pDest);
+		return;
+	}
+	// If the destination is null, then we need to create a new node
+	if (pDest == nullptr)
+	{
+		pDest = new BNode<T>(pSrc->data);
+	}
+	else   // use existing pDest
+	{ 
+		pDest->data = pSrc->data;
+	}
+
+	// Recursive ops on children
+	assign(pDest->pLeft, pSrc->pLeft);
+	assign(pDest->pRight, pSrc->pRight);
+
+	//properly assign parent pointers
+	if (pDest->pLeft)
+		pDest->pLeft->pParent = pDest;
+	if (pDest->pRight)
+		pDest->pRight->pParent = pDest;
+
 
 }
