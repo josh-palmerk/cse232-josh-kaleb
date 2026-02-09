@@ -36,12 +36,12 @@ public:
    //
    BNode()
    {
-       pLeft = pRight = pParent = nullptr;
+      pLeft = pRight = pParent = nullptr;
    }
    
    BNode(const T &  t) : data(t)
    {
-      pLeft = pRight = pParent = nullptr; //something still wrong here
+      pLeft = pRight = pParent = nullptr;
    }
    
    BNode(T && t) : data(std::move(t))
@@ -65,10 +65,10 @@ public:
 template <class T>
 inline size_t size(const BNode <T> * p)
 {
-    if (p == nullptr)
-        return 0;
-    else
-		return 1 + size(p->pLeft) + size(p->pRight);
+   if (p == nullptr)
+      return 0;
+   else
+      return 1 + size(p->pLeft) + size(p->pRight);
 }
 
 
@@ -79,9 +79,9 @@ inline size_t size(const BNode <T> * p)
 template <class T>
 inline void addLeft(BNode <T> * pNode, BNode <T> * pAdd)
 {
-    if (pNode == nullptr || pAdd == nullptr)
-		return;
-    pNode->pLeft = pAdd;
+   if (pNode == nullptr || pAdd == nullptr)
+      return;
+   pNode->pLeft = pAdd;
 	pAdd->pParent = pNode;
 }
 
