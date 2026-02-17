@@ -430,6 +430,9 @@ template <typename T>
 typename BST <T> ::iterator BST <T> :: erase(iterator & it)
 {  
     return end();
+
+    //The code below is absolutely buggin
+
   //  if (it.pNode == nullptr)
   //      return end();
   //  BNode* nodeToRemove = it.pNode;
