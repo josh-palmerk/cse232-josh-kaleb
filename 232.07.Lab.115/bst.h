@@ -166,8 +166,8 @@ public:
    // 
    // Status
    //
-   bool isRightChild(BNode* pNode) const { return pNode && pNode->pRight == this; }
-   bool isLeftChild( BNode * pNode) const { return pNode && pNode->pLeft == this; } //not sure if this is what it wants
+   bool isRightChild(BNode* pNode)  const { return pNode == pNode->pParent->pRight; }
+   bool isLeftChild( BNode * pNode) const { return pNode == pNode->pParent->pLeft;  }
 
    // balance the tree
    void balance();
@@ -217,7 +217,7 @@ public:
    }
    iterator & operator = (const iterator & rhs)
    {
-       pNode = rhs.pNode;
+      pNode = rhs.pNode;
 	   return *this;
    }
 
@@ -242,15 +242,22 @@ public:
    iterator & operator ++ ();
    iterator   operator ++ (int postfix)
    {
-	   iterator temp = *this;
-       if (pNode != nullptr)
-		   pNode = pNode->pRight; // this is wrong, but it will compile
-	   return temp;               // needs to be fixed to go to the next node in the tree, not just the right child
+      iterator temp = *this;
+      if (pNode != nullptr)
+      {
+         ++(*this);
+      }
+      return temp;
    }
    iterator & operator -- ();
    iterator   operator -- (int postfix)
    {
-      return *this;;
+      iterator temp = *this;
+      if (pNode != nullptr)
+      {
+         --(*this);
+      }
+      return temp;
    }
 
    // must give friend status to remove so it can call getNode() from it
@@ -778,25 +785,27 @@ void BST <T> :: BNode :: balance()
 template <typename T>
 typename BST <T> :: iterator & BST <T> :: iterator :: operator ++ ()
 {
-    if (!pNode)
-        return *this;
-
-    if (pNode->pRight)
-    {
-        pNode = pNode->pRight;
-        while (pNode->pLeft)
-            pNode = pNode->pLeft;
-    }
-    else
-    {
-        BNode* parent = pNode->pParent;
-        while (parent && pNode == parent->pRight)
-        {
-            pNode = parent;
-            parent = parent->pParent;
-        }
-        pNode = parent;
-    }
+   if (!pNode)
+      return *this;
+   // Case 1
+   if (pNode->pRight)
+   {
+      pNode = pNode->pRight;
+      while (pNode->pLeft)
+         pNode = pNode->pLeft;
+   }
+   else
+   {
+      BNode* parent = pNode->pParent;
+      // Case 3
+      while (parent && pNode == parent->pRight)
+      {
+         pNode = parent;
+         parent = parent->pParent;
+      }
+      // By residing without the while loop, this also acomplishes Case 2
+      pNode = parent;
+   }
    return *this;  
 }
 
@@ -807,10 +816,29 @@ typename BST <T> :: iterator & BST <T> :: iterator :: operator ++ ()
 template <typename T>
 typename BST <T> :: iterator & BST <T> :: iterator :: operator -- ()
 {
+   if (!pNode)
+      return *this;
+   // Reverse Case 1
+   if (pNode->pLeft)
+   {
+      pNode = pNode->pLeft;
+      while (pNode->pRight)
+         pNode = pNode->pRight;
+   }
+   else
+   {
+      BNode* parent = pNode->pParent;
+      // Reverse Case 3
+      while (parent && pNode == parent->pLeft)
+      {
+         pNode = parent;
+         parent = parent->pParent;
+      }
+      // Reverse Case 2 (and 3 still as well)
+      pNode = parent;
+   }
    return *this;
-
 }
-
 
 } // namespace custom
 
