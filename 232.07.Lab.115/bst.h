@@ -469,15 +469,15 @@ std::pair<typename BST <T> ::iterator, bool> BST <T> ::insert(T&& t, bool keepUn
 {
    if (root == nullptr)
    {
-      root = new BNode(t);
-      root->isRed = false; // root is always black
+      root = new BNode(std::move(t));
+      root->balance(); // root is always black
       ++numElements;
       return std::make_pair(iterator(root), true);
    }
 
    BNode* current = root;
    BNode* parent = nullptr;
-   bool goLeft = true;   // remembers which side we went last
+   bool goLeft = true;   // remembers which side we went down last
 
    while (current != nullptr)
    {
@@ -486,7 +486,7 @@ std::pair<typename BST <T> ::iterator, bool> BST <T> ::insert(T&& t, bool keepUn
       if (keepUnique && t == current->data)
          return std::make_pair(iterator(current), false);
 
-      if (t < current->data)          // <-- the single '<' in the method
+      if (t < current->data)
       {
          goLeft = true;
          current = current->pLeft;
@@ -504,10 +504,9 @@ std::pair<typename BST <T> ::iterator, bool> BST <T> ::insert(T&& t, bool keepUn
    newNode->pParent = parent;
 
    if (goLeft)
-      parent->pLeft = newNode;
+      parent->addLeft(std::move(newNode));
    else
-      parent->pRight = newNode;
-
+      parent->addRight(std::move(newNode));
    ++numElements;
 
    // Balance the tree after insertion
@@ -517,7 +516,7 @@ std::pair<typename BST <T> ::iterator, bool> BST <T> ::insert(T&& t, bool keepUn
    while (root->pParent)
       root = root->pParent;
 
-   root->isRed = false; // root is always black
+   root->balance(); // root is always black
 
    return std::make_pair(iterator(newNode), true);
 }
@@ -668,7 +667,6 @@ void BST <T> :: BNode :: addLeft (BNode * pNode)
 {
    pLeft = pNode;
    pNode->pParent = this;
-   ++numElements;
 }
 
 /******************************************************
@@ -680,7 +678,6 @@ void BST <T> :: BNode :: addRight (BNode * pNode)
 {
    pRight = pNode;
    pNode->pParent = this;
-   ++numElements;
 }
 
 /******************************************************
@@ -692,7 +689,6 @@ void BST<T> :: BNode :: addLeft (const T & t)
 {
    pLeft = new BNode(t);
    pLeft->pParent = this;
-   ++numElements;
 }
 
 /******************************************************
@@ -704,7 +700,6 @@ void BST<T> ::BNode::addLeft(T && t)
 {
    pLeft = new BNode(std::move(t));
    pLeft->pParent = this;
-   ++numElements;
 }
 
 /******************************************************
@@ -716,7 +711,6 @@ void BST <T> :: BNode :: addRight (const T & t)
 {
    pRight = new BNode(t);
    pRight->pParent = this;
-   ++numElements;
 }
 
 /******************************************************
@@ -728,7 +722,6 @@ void BST <T> ::BNode::addRight(T && t)
 {
    pRight = new BNode(std::move(t));
    pRight->pParent = this;
-   ++numElements;
 }
 
 #ifdef DEBUG
@@ -860,86 +853,84 @@ int BST <T> :: BNode :: computeSize() const
 template <typename T>
 void BST<T>::BNode::balance()
 {
-   BNode* z = this;
+   BNode* current = this;
 
    // Case 1: if we are the root, just make us black
-   if (!z->pParent)
+   if (!current->pParent)
    {
-      z->isRed = false;
+      current->isRed = false;
       return;
    }
 
-   while (z->pParent && z->pParent->isRed)
+   while (current->pParent && current->pParent->isRed)
    {
-      BNode* p = z->pParent;
-      BNode* g = p->pParent;
-      if (!g)
+      BNode* parent      = current->pParent;
+      BNode* grandparent = parent->pParent;
+      if (!grandparent)
          break; // safety guard
 
       // Parent is left child of grandparent
-      if (p == g->pLeft)
+      if (parent == grandparent->pLeft)
       {
-         BNode* y = g->pRight; // aunt
+         BNode* aunt = grandparent->pRight;
 
-         // Case 3: aunt is red
-         if (y && y->isRed)
+         // Case 3: uncle is red
+         if (aunt && aunt->isRed)
          {
-            p->isRed = false;
-            y->isRed = false;
-            g->isRed = true;
-            z = g;
+            parent->isRed      = false;
+            aunt->isRed       = false;
+            grandparent->isRed = true;
+            current = grandparent;
          }
          else
          {
-            // Case 4a: z is right child -> rotate parent left
-            if (z == p->pRight)
+            // Case 4a: current is right child -> rotate parent left
+            if (current == parent->pRight)
             {
-               z = p;
-               rotateLeft(z);
-               p = z->pParent;
-               g = p->pParent;
+               current = parent;
+               rotateLeft(current);
+               parent      = current->pParent;
+               grandparent = parent->pParent;
             }
 
-            // Case 4c: z is left child -> rotate grandparent right
-            rotateRight(g);
-            p->isRed = false;
-            if (g)
-               g->isRed = true;
+            // Case 4c: current is left child -> rotate grandparent right
+            rotateRight(grandparent);
+            parent->isRed = false;
+            if (grandparent)
+               grandparent->isRed = true;
          }
       }
       else // Parent is right child of grandparent (mirror)
       {
-         BNode* y = g->pLeft; // aunt
+         BNode* aunt = grandparent->pLeft;
 
          // Case 3 mirror
-         if (y && y->isRed)
+         if (aunt && aunt->isRed)
          {
-            p->isRed = false;
-            y->isRed = false;
-            g->isRed = true;
-            z = g;
+            parent->isRed      = false;
+            aunt->isRed       = false;
+            grandparent->isRed = true;
+            current = grandparent;
          }
          else
          {
-            // Case 4b: z is left child -> rotate parent right
-            if (z == p->pLeft)
+            // Case 4b: current is left child -> rotate parent right
+            if (current == parent->pLeft)
             {
-               z = p;
-               rotateRight(z);
-               p = z->pParent;
-               g = p->pParent;
+               current = parent;
+               rotateRight(current);
+               parent      = current->pParent;
+               grandparent = parent->pParent;
             }
 
-            // Case 4d: z is right child -> rotate grandparent left
-            rotateLeft(g);
-            p->isRed = false;
-            if (g)
-               g->isRed = true;
+            // Case 4d: current is right child -> rotate grandparent left
+            rotateLeft(grandparent);
+            parent->isRed = false;
+            if (grandparent)
+               grandparent->isRed = true;
          }
       }
    }
-
-   // Root will be recolored black by BST::insert
 }
 
 /*************************************************
