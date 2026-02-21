@@ -419,33 +419,33 @@ std::pair<typename BST <T> :: iterator, bool> BST <T> :: insert(const T & t, boo
 
    BNode* current = root;
    BNode* parent = nullptr;
+   bool goLeft = true;   // remembers which side we went last
 
    while (current != nullptr)
    {
       parent = current;
-      if (t < current->data)
+
+      if (keepUnique && t == current->data)
+         return std::make_pair(iterator(current), false);
+
+      if (t < current->data)          // <-- the single '<' in the method
       {
+         goLeft = true;
          current = current->pLeft;
-      }
-      else if (current->data < t)
-      {
-         current = current->pRight;
       }
       else
       {
-         // Duplicate found
-         if (keepUnique)
-            return std::make_pair(iterator(current), false);
-         else
-            break;
+         goLeft = false;
+         current = current->pRight;
       }
    }
 
+   // Now we know parent and which side (goLeft) to attach on
    BNode* newNode = new BNode(t);
-   newNode->isRed = true; // new nodes are red
+   newNode->isRed = true;   // new nodes are red
    newNode->pParent = parent;
 
-   if (t < parent->data)
+   if (goLeft)
       parent->pLeft = newNode;
    else
       parent->pRight = newNode;
@@ -465,11 +465,11 @@ std::pair<typename BST <T> :: iterator, bool> BST <T> :: insert(const T & t, boo
 }
 
 template <typename T>
-std::pair<typename BST <T> ::iterator, bool> BST <T> ::insert(T && t, bool keepUnique)
+std::pair<typename BST <T> ::iterator, bool> BST <T> ::insert(T&& t, bool keepUnique)
 {
    if (root == nullptr)
    {
-      root = new BNode(std::move(t));
+      root = new BNode(t);
       root->isRed = false; // root is always black
       ++numElements;
       return std::make_pair(iterator(root), true);
@@ -477,33 +477,33 @@ std::pair<typename BST <T> ::iterator, bool> BST <T> ::insert(T && t, bool keepU
 
    BNode* current = root;
    BNode* parent = nullptr;
+   bool goLeft = true;   // remembers which side we went last
 
    while (current != nullptr)
    {
       parent = current;
-      if (t < current->data)
+
+      if (keepUnique && t == current->data)
+         return std::make_pair(iterator(current), false);
+
+      if (t < current->data)          // <-- the single '<' in the method
       {
+         goLeft = true;
          current = current->pLeft;
-      }
-      else if (current->data < t)
-      {
-         current = current->pRight;
       }
       else
       {
-         // Duplicate found
-         if (keepUnique)
-            return std::make_pair(iterator(current), false);
-         else
-            break;
+         goLeft = false;
+         current = current->pRight;
       }
    }
 
-   BNode* newNode = new BNode(std::move(t));
-   newNode->isRed = true; // new nodes are red
+   // Now we know parent and which side (goLeft) to attach on
+   BNode* newNode = new BNode(t);
+   newNode->isRed = true;   // new nodes are red
    newNode->pParent = parent;
 
-   if (newNode->data < parent->data)
+   if (goLeft)
       parent->pLeft = newNode;
    else
       parent->pRight = newNode;
