@@ -646,6 +646,16 @@ typename BST <T> :: iterator custom :: BST <T> :: begin() const noexcept
 template <typename T>
 typename BST <T> :: iterator BST<T> :: find(const T & t)
 {
+   BNode* pCurrent = root;
+   while (pCurrent != nullptr)
+   {
+      if (t == pCurrent->data)
+         return iterator(pCurrent);
+      else if (t < pCurrent->data)
+         pCurrent = pCurrent->pLeft;
+      else
+         pCurrent = pCurrent->pRight;
+   }
    return end();
 }
 
