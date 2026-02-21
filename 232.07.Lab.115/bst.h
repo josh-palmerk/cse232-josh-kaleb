@@ -114,7 +114,7 @@ public:
    //
 
    bool   empty() const noexcept { return root == nullptr; }
-   size_t size()  const noexcept { return numElements;   }
+   size_t size()  const noexcept { return numElements;     }
    
 private:
    class BNode;
@@ -138,20 +138,20 @@ public:
    // Construct
    //
 	BNode() : data(), pLeft(nullptr), pRight(nullptr), pParent(nullptr), isRed(false)
-    {
+   {
 
-    }
+   }
 
-    BNode(const T& t) : data(t), pLeft(nullptr), pRight(nullptr), pParent(nullptr), isRed(false)
-    {
+   BNode(const T& t) : data(t), pLeft(nullptr), pRight(nullptr), pParent(nullptr), isRed(false)
+   {
 
-	}
+   }
 
 
-    BNode(T&& t) : data(std::move(t)), pLeft(nullptr), pRight(nullptr), pParent(nullptr), isRed(false)
-    {
+   BNode(T&& t) : data(std::move(t)), pLeft(nullptr), pRight(nullptr), pParent(nullptr), isRed(false)
+   {
 
-    }
+   }
 
    //
    // Insert
@@ -160,17 +160,21 @@ public:
    void addRight(BNode * pNode);
    void addLeft (const T &  t);
    void addRight(const T &  t);
-   void addLeft(       T && t);
+   void addLeft (      T && t);
    void addRight(      T && t);
 
    // 
    // Status
    //
-   bool isRightChild(BNode* pNode)  const { return pNode == pNode->pParent->pRight; }
-   bool isLeftChild( BNode * pNode) const { return pNode == pNode->pParent->pLeft;  }
+   bool isRightChild(BNode* pNode) const { return pNode->pParent && pNode == pNode->pParent->pRight; }
+   bool isLeftChild( BNode* pNode) const { return pNode->pParent && pNode == pNode->pParent->pLeft;  }
 
    // balance the tree
    void balance();
+
+   // rotate nodes
+   void rotateLeft( BNode* pNode);
+   void rotateRight(BNode* pNode);
 
 #ifdef DEBUG
    //
@@ -285,7 +289,7 @@ private:
 template <typename T>
 BST <T> ::BST()
 {
-    numElements = 0;
+   numElements = 0;
 	root = nullptr;
 }
 
@@ -298,9 +302,9 @@ BST <T> ::BST(const BST<T>& rhs) : numElements(rhs.numElements), root(nullptr)
 {
 	numElements = rhs.numElements;
 	//root = new BNode(rhs.root);
-    for (iterator it = rhs.begin(); it != rhs.end(); ++it)
-    {
-        insert(*it);
+   for (iterator it = rhs.begin(); it != rhs.end(); ++it)
+   {
+      insert(*it);
 	}
 }
 
@@ -326,9 +330,9 @@ BST <T> ::BST(const std::initializer_list<T>& il)
 {
 	root = nullptr;
 	numElements = 0;
-    for (const T& t : il)
-    {
-        insert(t);
+   for (const T& t : il)
+   {
+      insert(t);
 	}
 }
 
@@ -338,9 +342,8 @@ BST <T> ::BST(const std::initializer_list<T>& il)
 template <typename T>
 BST <T> :: ~BST()
 {
-    clear();
+   clear();
 }
-
 
 /*********************************************
  * BST :: ASSIGNMENT OPERATOR
@@ -349,7 +352,7 @@ BST <T> :: ~BST()
 template <typename T>
 BST <T> & BST <T> :: operator = (const BST <T> & rhs)
 {
-    if (this != &rhs)
+   if (this != &rhs)
    {
       clear();
       for (iterator it = rhs.begin(); it != rhs.end(); ++it)
@@ -395,7 +398,7 @@ BST <T> & BST <T> :: operator = (BST <T> && rhs)
 template <typename T>
 void BST <T> :: swap (BST <T>& rhs)
 {
-    std::swap(root, rhs.root);
+   std::swap(root, rhs.root);
 	std::swap(numElements, rhs.numElements);
 }
 
@@ -406,27 +409,117 @@ void BST <T> :: swap (BST <T>& rhs)
 template <typename T>
 std::pair<typename BST <T> :: iterator, bool> BST <T> :: insert(const T & t, bool keepUnique)
 {
-    if (root == nullptr)
-    {
-        root = new BNode(t);
-        ++numElements;
-		return std::make_pair(iterator(root), true);
-    }
-   std::pair<iterator, bool> pairReturn(end(), false);
-   return pairReturn;
+   if (root == nullptr)
+   {
+      root = new BNode(t);
+      root->isRed = false; // root is always black
+      ++numElements;
+      return std::make_pair(iterator(root), true);
+   }
+
+   BNode* current = root;
+   BNode* parent = nullptr;
+
+   while (current != nullptr)
+   {
+      parent = current;
+      if (t < current->data)
+      {
+         current = current->pLeft;
+      }
+      else if (current->data < t)
+      {
+         current = current->pRight;
+      }
+      else
+      {
+         // Duplicate found
+         if (keepUnique)
+            return std::make_pair(iterator(current), false);
+         else
+            break;
+      }
+   }
+
+   BNode* newNode = new BNode(t);
+   newNode->isRed = true; // new nodes are red
+   newNode->pParent = parent;
+
+   if (t < parent->data)
+      parent->pLeft = newNode;
+   else
+      parent->pRight = newNode;
+
+   ++numElements;
+
+   // Balance the tree after insertion
+   newNode->balance();
+
+   // Update root if necessary
+   while (root->pParent)
+      root = root->pParent;
+
+   root->isRed = false; // root is always black
+
+   return std::make_pair(iterator(newNode), true);
 }
 
 template <typename T>
 std::pair<typename BST <T> ::iterator, bool> BST <T> ::insert(T && t, bool keepUnique)
 {
-    if (root == nullptr)
-    {
-        root = new BNode(std::move(t));
-        ++numElements;
-        return std::make_pair(iterator(root), true);
-	}
-   std::pair<iterator, bool> pairReturn(end(), false);
-   return pairReturn;
+   if (root == nullptr)
+   {
+      root = new BNode(std::move(t));
+      root->isRed = false; // root is always black
+      ++numElements;
+      return std::make_pair(iterator(root), true);
+   }
+
+   BNode* current = root;
+   BNode* parent = nullptr;
+
+   while (current != nullptr)
+   {
+      parent = current;
+      if (t < current->data)
+      {
+         current = current->pLeft;
+      }
+      else if (current->data < t)
+      {
+         current = current->pRight;
+      }
+      else
+      {
+         // Duplicate found
+         if (keepUnique)
+            return std::make_pair(iterator(current), false);
+         else
+            break;
+      }
+   }
+
+   BNode* newNode = new BNode(std::move(t));
+   newNode->isRed = true; // new nodes are red
+   newNode->pParent = parent;
+
+   if (newNode->data < parent->data)
+      parent->pLeft = newNode;
+   else
+      parent->pRight = newNode;
+
+   ++numElements;
+
+   // Balance the tree after insertion
+   newNode->balance();
+
+   // Update root if necessary
+   while (root->pParent)
+      root = root->pParent;
+
+   root->isRed = false; // root is always black
+
+   return std::make_pair(iterator(newNode), true);
 }
 
 /*************************************************
@@ -436,9 +529,9 @@ std::pair<typename BST <T> ::iterator, bool> BST <T> ::insert(T && t, bool keepU
 template <typename T>
 typename BST <T> ::iterator BST <T> :: erase(iterator & it)
 {  
-    return end();
+   return end();
 
-    //The code below is absolutely buggin
+   //The code below is absolutely buggin
 
   //  if (it.pNode == nullptr)
   //      return end();
@@ -510,9 +603,9 @@ typename BST <T> ::iterator BST <T> :: erase(iterator & it)
 template <typename T>
 void BST <T> ::clear() noexcept
 {
-    clear(root);
-    root = nullptr;
-    numElements = 0;
+   clear(root);
+   root = nullptr;
+   numElements = 0;
 }
 
 /*****************************************************
@@ -522,12 +615,12 @@ void BST <T> ::clear() noexcept
 template <typename T>
 void BST<T>::clear(BNode* node)
 {
-    if (!node)
-        return;
+   if (!node)
+      return;
 
-    clear(node->pLeft);
-    clear(node->pRight);
-    delete node;
+   clear(node->pLeft);
+   clear(node->pRight);
+   delete node;
 }
 
 
@@ -573,7 +666,9 @@ typename BST <T> :: iterator BST<T> :: find(const T & t)
 template <typename T>
 void BST <T> :: BNode :: addLeft (BNode * pNode)
 {
-
+   pLeft = pNode;
+   pNode->pParent = this;
+   ++numElements;
 }
 
 /******************************************************
@@ -583,7 +678,9 @@ void BST <T> :: BNode :: addLeft (BNode * pNode)
 template <typename T>
 void BST <T> :: BNode :: addRight (BNode * pNode)
 {
-
+   pRight = pNode;
+   pNode->pParent = this;
+   ++numElements;
 }
 
 /******************************************************
@@ -593,7 +690,9 @@ void BST <T> :: BNode :: addRight (BNode * pNode)
 template <typename T>
 void BST<T> :: BNode :: addLeft (const T & t)
 {
-
+   pLeft = new BNode(t);
+   pLeft->pParent = this;
+   ++numElements;
 }
 
 /******************************************************
@@ -603,7 +702,9 @@ void BST<T> :: BNode :: addLeft (const T & t)
 template <typename T>
 void BST<T> ::BNode::addLeft(T && t)
 {
-
+   pLeft = new BNode(std::move(t));
+   pLeft->pParent = this;
+   ++numElements;
 }
 
 /******************************************************
@@ -613,7 +714,9 @@ void BST<T> ::BNode::addLeft(T && t)
 template <typename T>
 void BST <T> :: BNode :: addRight (const T & t)
 {
-
+   pRight = new BNode(t);
+   pRight->pParent = this;
+   ++numElements;
 }
 
 /******************************************************
@@ -623,7 +726,9 @@ void BST <T> :: BNode :: addRight (const T & t)
 template <typename T>
 void BST <T> ::BNode::addRight(T && t)
 {
-
+   pRight = new BNode(std::move(t));
+   pRight->pParent = this;
+   ++numElements;
 }
 
 #ifdef DEBUG
@@ -753,21 +858,151 @@ int BST <T> :: BNode :: computeSize() const
  * Balance the tree from a given location
  ******************************************************/
 template <typename T>
-void BST <T> :: BNode :: balance()
+void BST<T>::BNode::balance()
 {
-   // Case 1: if we are the root, then color ourselves black and call it a day.
+   BNode* z = this;
+
+   // Case 1: if we are the root, just make us black
+   if (!z->pParent)
+   {
+      z->isRed = false;
+      return;
+   }
+
+   while (z->pParent && z->pParent->isRed)
+   {
+      BNode* p = z->pParent;
+      BNode* g = p->pParent;
+      if (!g)
+         break; // safety guard
+
+      // Parent is left child of grandparent
+      if (p == g->pLeft)
+      {
+         BNode* y = g->pRight; // aunt
+
+         // Case 3: aunt is red
+         if (y && y->isRed)
+         {
+            p->isRed = false;
+            y->isRed = false;
+            g->isRed = true;
+            z = g;
+         }
+         else
+         {
+            // Case 4a: z is right child -> rotate parent left
+            if (z == p->pRight)
+            {
+               z = p;
+               rotateLeft(z);
+               p = z->pParent;
+               g = p->pParent;
+            }
+
+            // Case 4c: z is left child -> rotate grandparent right
+            rotateRight(g);
+            p->isRed = false;
+            if (g)
+               g->isRed = true;
+         }
+      }
+      else // Parent is right child of grandparent (mirror)
+      {
+         BNode* y = g->pLeft; // aunt
+
+         // Case 3 mirror
+         if (y && y->isRed)
+         {
+            p->isRed = false;
+            y->isRed = false;
+            g->isRed = true;
+            z = g;
+         }
+         else
+         {
+            // Case 4b: z is left child -> rotate parent right
+            if (z == p->pLeft)
+            {
+               z = p;
+               rotateRight(z);
+               p = z->pParent;
+               g = p->pParent;
+            }
+
+            // Case 4d: z is right child -> rotate grandparent left
+            rotateLeft(g);
+            p->isRed = false;
+            if (g)
+               g->isRed = true;
+         }
+      }
+   }
+
+   // Root will be recolored black by BST::insert
+}
+
+/*************************************************
+* ROTATE LEFT
+* Rotate a subtree left around a given node
+**************************************************/
+template <typename T>
+void BST<T>::BNode::rotateLeft(BNode* x)
+{
+   BNode* y = x->pRight;
+   if (!y) return;
+
+   // Move y's left subtree to x's right
+   x->pRight = y->pLeft;
+   if (y->pLeft)
+      y->pLeft->pParent = x;
+
+   // Link y to x's parent
+   y->pParent = x->pParent;
+   if (!x->pParent)
+   {
+      // x was root; BST::insert will fix root afterward
+   }
+   else if (x == x->pParent->pLeft)
+      x->pParent->pLeft = y;
+   else
+      x->pParent->pRight = y;
+
+   // Put x on y's left
+   y->pLeft = x;
+   x->pParent = y;
+}
 
 
-   // Case 2: if the parent is black, then there is nothing left to do
+/*************************************************
+* ROTATE RIGHT
+* Rotate a subtree right around a given node
+* ************************************************/
+template <typename T>
+void BST<T>::BNode::rotateRight(BNode* x)
+{
+   BNode* y = x->pLeft;
+   if (!y) return;
 
-   // Case 3: if the aunt is red, then just recolor
+   // Move y's right subtree to x's left
+   x->pLeft = y->pRight;
+   if (y->pRight)
+      y->pRight->pParent = x;
 
-   // Case 4: if the aunt is black or non-existant, then we need to rotate
+   // Link y to x's parent
+   y->pParent = x->pParent;
+   if (!x->pParent)
+   {
+      // x was root; BST::insert will fix root afterward
+   }
+   else if (x == x->pParent->pLeft)
+      x->pParent->pLeft = y;
+   else
+      x->pParent->pRight = y;
 
-   // Case 4a: We are mom's left and mom is granny's left
-   // case 4b: We are mom's right and mom is granny's right
-   // Case 4c: We are mom's right and mom is granny's left
-   // case 4d: we are mom's left and mom is granny's right
+   // Put x on y's right
+   y->pRight = x;
+   x->pParent = y;
 }
 
 /*************************************************
