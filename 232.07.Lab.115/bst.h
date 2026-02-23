@@ -300,8 +300,6 @@ BST <T> ::BST()
 template <typename T>
 BST <T> ::BST(const BST<T>& rhs) : numElements(rhs.numElements), root(nullptr)
 {
-	numElements = rhs.numElements;
-	//root = new BNode(rhs.root);
    for (iterator it = rhs.begin(); it != rhs.end(); ++it)
    {
       insert(*it);
@@ -315,8 +313,8 @@ BST <T> ::BST(const BST<T>& rhs) : numElements(rhs.numElements), root(nullptr)
 template <typename T>
 BST <T> :: BST(BST <T> && rhs) 
 {
-	numElements = rhs.numElements;
-	root = rhs.root;
+   numElements = std::move(rhs.numElements);
+   root = std::move(rhs.root);
 	rhs.numElements = 0;
 	rhs.root = nullptr;
 }
@@ -499,7 +497,7 @@ std::pair<typename BST <T> ::iterator, bool> BST <T> ::insert(T&& t, bool keepUn
    }
 
    // Now we know parent and which side (goLeft) to attach on
-   BNode* newNode = new BNode(t);
+   BNode* newNode = new BNode(std::move(t));
    newNode->isRed = true;   // new nodes are red
    newNode->pParent = parent;
 
