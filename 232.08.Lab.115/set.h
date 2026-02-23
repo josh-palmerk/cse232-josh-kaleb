@@ -99,11 +99,11 @@ public:
    class iterator;
    iterator begin() const noexcept 
    { 
-      return iterator(); 
+      return iterator(bst.begin()); 
    }
    iterator end() const noexcept 
    { 
-      return iterator(); 
+       return iterator(bst.end());
    }
 
    //
@@ -189,53 +189,62 @@ public:
    { 
    }
    iterator(const typename custom::BST<T>::iterator& itRHS) 
+	   : it(itRHS)
    {  
    }
    iterator(const iterator & rhs) 
+	   : it(rhs.it)
    { 
    }
    iterator & operator = (const iterator & rhs)
    {
+	  it = rhs.it;
       return *this;
    }
 
    // equals, not equals operator
    bool operator != (const iterator & rhs) const 
    { 
-      return true; 
+	   return it != rhs.it;
    }
    bool operator == (const iterator & rhs) const 
    { 
-      return true; 
+	   return it == rhs.it;
    }
 
    // dereference operator: by-reference so we can modify the Set
    const T & operator * () const 
    { 
-      return *(new T); 
+      return *it; 
    }
 
    // prefix increment
    iterator & operator ++ ()
    {
+      ++it;
       return *this;
    }
 
    // postfix increment
    iterator operator++ (int postfix)
    {
-      return *this;
+       iterator temp = *this;
+       it++;
+       return temp;
    }
    
    // prefix decrement
    iterator & operator -- ()
    {
+	  --it;
       return *this;
    }
    
    // postfix decrement
    iterator operator-- (int postfix)
    {
+	   iterator temp = *this;
+	   it--;
       return *this;
    }
    
