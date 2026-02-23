@@ -137,18 +137,18 @@ public:
    // 
    // Construct
    //
-	BNode() : data(), pLeft(nullptr), pRight(nullptr), pParent(nullptr), isRed(false)
+	BNode() : data(), pLeft(nullptr), pRight(nullptr), pParent(nullptr), isRed(true)
    {
 
    }
 
-   BNode(const T& t) : data(t), pLeft(nullptr), pRight(nullptr), pParent(nullptr), isRed(false)
+   BNode(const T& t) : data(t), pLeft(nullptr), pRight(nullptr), pParent(nullptr), isRed(true)
    {
 
    }
 
 
-   BNode(T&& t) : data(std::move(t)), pLeft(nullptr), pRight(nullptr), pParent(nullptr), isRed(false)
+   BNode(T&& t) : data(std::move(t)), pLeft(nullptr), pRight(nullptr), pParent(nullptr), isRed(true)
    {
 
    }
@@ -608,9 +608,9 @@ typename BST<T>::iterator BST<T>::erase(iterator& it)
       pResult = pToRemove->pParent;
    }
    --numElements;
-
    delete pToRemove;
    pToRemove = nullptr;
+   pResult->balance();
    return iterator(pResult);
 }
 
