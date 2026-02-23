@@ -287,7 +287,7 @@ private:
   * BST :: DEFAULT CONSTRUCTOR
   ********************************************/
 template <typename T>
-BST <T> ::BST()
+BST <T> :: BST()
 {
    numElements = 0;
 	root = nullptr;
@@ -298,12 +298,28 @@ BST <T> ::BST()
  * Copy one tree to another
  ********************************************/
 template <typename T>
-BST <T> ::BST(const BST<T>& rhs) : numElements(rhs.numElements), root(nullptr)
+BST <T> :: BST(const BST<T>& rhs) : numElements(rhs.numElements), root(nullptr)
 {
-   for (iterator it = rhs.begin(); it != rhs.end(); ++it)
+   if (!rhs.root)
+      return;
+
+   // recursive lambda to copy the tree
+   std::function<BNode*(const BNode*, BNode*)> copy = [&](const BNode* pSrc, BNode* pParent) -> BNode*
    {
-      insert(*it);
-	}
+      if (!pSrc)
+         return nullptr;
+
+      BNode* pNew = new BNode(pSrc->data);
+      pNew->isRed = pSrc->isRed;
+      pNew->pParent = pParent;
+
+      pNew->pLeft  = copy(pSrc->pLeft,  pNew);
+      pNew->pRight = copy(pSrc->pRight, pNew);
+
+      return pNew;
+   };
+
+   root = copy(rhs.root, nullptr);
 }
 
 /*********************************************
@@ -350,15 +366,46 @@ BST <T> :: ~BST()
 template <typename T>
 BST <T> & BST <T> :: operator = (const BST <T> & rhs)
 {
-   if (this != &rhs)
+   if (this == &rhs)
+      return *this;
+
+   std::function<void(BNode*&, const BNode*, BNode*)> assign = [&](BNode*& dest, const BNode* src, BNode* parent)
    {
-      clear();
-      for (iterator it = rhs.begin(); it != rhs.end(); ++it)
+      if (src && dest) // both exist → assign
       {
-         insert(*it);
+         dest->data = src->data;
+         dest->isRed = src->isRed;
+         dest->pParent = parent;
+
+         assign(dest->pLeft,  src->pLeft,  dest);
+         assign(dest->pRight, src->pRight, dest);
       }
-   }
-	return *this;
+      else if (src && !dest) // src but no dest, need a new node
+      {
+         dest = new BNode(src->data);
+         dest->isRed = src->isRed;
+         dest->pParent = parent;
+
+         assign(dest->pLeft,  src->pLeft,  dest);
+         assign(dest->pRight, src->pRight, dest);
+      }
+      else if (!src && dest) // delete subtree
+      {
+         // Recursively delete children first
+         if (dest->pLeft)
+            assign(dest->pLeft, nullptr, dest);
+         if (dest->pRight)
+            assign(dest->pRight, nullptr, dest);
+
+         delete dest;
+         dest = nullptr;
+      }
+   };
+
+   assign(root, rhs.root, nullptr);
+   numElements = rhs.numElements;
+
+   return *this;
 }
 
 /*********************************************
@@ -369,7 +416,7 @@ template <typename T>
 BST <T> & BST <T> :: operator = (const std::initializer_list<T>& il)
 {
    clear();
-   for (auto value : il)
+   for (const T& value : il)
    {
       insert(value);
    }
@@ -505,10 +552,12 @@ std::pair<typename BST <T> ::iterator, bool> BST <T> ::insert(T&& t, bool keepUn
    newNode->pParent = parent;
 
    if (goLeft)
-      parent->addLeft(std::move(newNode));
+      parent->addLeft(newNode);
    else
-      parent->addRight(std::move(newNode));
+      parent->addRight(newNode);
    ++numElements;
+   
+   newNode->pParent = parent;
 
    // Balance the tree after insertion
    newNode->balance();
