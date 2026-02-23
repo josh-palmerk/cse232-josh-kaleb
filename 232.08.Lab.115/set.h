@@ -49,10 +49,7 @@ public:
    }
    set(const set &  rhs)
    { 
-	   for (auto it = rhs.begin(); it != rhs.end(); ++it)
-       {
-           insert(*it);
-	   }
+
    }
    set(set && rhs) 
    { 
