@@ -368,6 +368,11 @@ BST <T> & BST <T> :: operator = (const BST <T> & rhs)
 template <typename T>
 BST <T> & BST <T> :: operator = (const std::initializer_list<T>& il)
 {
+   clear();
+   for (auto value : il)
+   {
+      insert(value);
+   }
    return *this;
 }
 
@@ -527,70 +532,6 @@ template <typename T>
 typename BST <T> ::iterator BST <T> :: erase(iterator & it)
 {  
    return end();
-
-   //The code below is absolutely buggin
-
-  //  if (it.pNode == nullptr)
-  //      return end();
-  //  BNode* nodeToRemove = it.pNode;
-  //  // if the node has no children, just remove it
-  //  if (nodeToRemove->pLeft == nullptr && nodeToRemove->pRight == nullptr)
-  //  {
-  //      if (nodeToRemove->pParent != nullptr)
-  //      {
-  //          if (nodeToRemove->isLeftChild(nodeToRemove->pParent))
-  //              nodeToRemove->pParent->pLeft = nullptr;
-  //          else
-  //              nodeToRemove->pParent->pRight = nullptr;
-  //      }
-  //      else
-  //      {
-  //          root = nullptr;
-  //      }
-  //      delete nodeToRemove;
-  //      it.pNode = nullptr;
-  //      --numElements;
-  //      return end();
-
-  //  }
-  //  // if the node has one child, replace the node with the child
-  //  else if (nodeToRemove->pLeft == nullptr || nodeToRemove->pRight == nullptr)
-  //  {
-  //      BNode* pChild = (nodeToRemove->pLeft != nullptr) ? nodeToRemove->pLeft : nodeToRemove->pRight;
-  //      if (nodeToRemove->pParent != nullptr)
-  //      {
-  //          if (nodeToRemove->isLeftChild(nodeToRemove->pParent))
-  //              nodeToRemove->pParent->pLeft = pChild;
-  //          else
-  //              nodeToRemove->pParent->pRight = pChild;
-  //      }
-  //      else
-  //      {
-  //          root = pChild;
-  //      }
-  //      pChild->pParent = nodeToRemove->pParent;
-  //      delete nodeToRemove;
-		//it.pNode = nullptr; // invalidate the iterator
-		//--numElements; // decrease size of tree
-		//return iterator(pChild);
-  //  }
-  //  // if the node has two children, find the in-order successor, swap values, and remove the successor
-  //  else
-  //  {
-  //      // find leftmost of right subtree
-  //      BNode* successor = nodeToRemove->pRight;
-  //      while (successor->pLeft)
-  //          successor = successor->pLeft;
-
-  //      // copy value
-  //      nodeToRemove->data = successor->data;
-
-  //      // erase successor directly
-  //      iterator temp(successor);
-  //      erase(temp);
-
-  //      return it;
-  //  }
 }
 
 /*****************************************************
@@ -946,30 +887,29 @@ void BST<T>::BNode::balance()
 * Rotate a subtree left around a given node
 **************************************************/
 template <typename T>
-void BST<T>::BNode::rotateLeft(BNode* x)
+void BST<T>::BNode::rotateLeft(BNode* pPivot)
 {
-   BNode* y = x->pRight;
-   if (!y) return;
+   BNode* pChild = pPivot->pRight;
+   if (!pChild) return;
 
-   // Move y's left subtree to x's right
-   x->pRight = y->pLeft;
-   if (y->pLeft)
-      y->pLeft->pParent = x;
+   // Move child's left subtree to pivot's right
+   pPivot->pRight = pChild->pLeft;
+   if (pChild->pLeft)
+      pChild->pLeft->pParent = pPivot;
 
-   // Link y to x's parent
-   y->pParent = x->pParent;
-   if (!x->pParent)
+   // Attach child to pivot's parent
+   pChild->pParent = pPivot->pParent;
+   if (pPivot->pParent)
    {
-      // x was root; BST::insert will fix root afterward
+      if (pPivot == pPivot->pParent->pLeft)
+         pPivot->pParent->pLeft = pChild;
+      else
+         pPivot->pParent->pRight = pChild;
    }
-   else if (x == x->pParent->pLeft)
-      x->pParent->pLeft = y;
-   else
-      x->pParent->pRight = y;
 
-   // Put x on y's left
-   y->pLeft = x;
-   x->pParent = y;
+   // Put pivot on child's left
+   pChild->pLeft = pPivot;
+   pPivot->pParent = pChild;
 }
 
 
@@ -978,31 +918,31 @@ void BST<T>::BNode::rotateLeft(BNode* x)
 * Rotate a subtree right around a given node
 * ************************************************/
 template <typename T>
-void BST<T>::BNode::rotateRight(BNode* x)
+void BST<T>::BNode::rotateRight(BNode* pPivot)
 {
-   BNode* y = x->pLeft;
-   if (!y) return;
+   BNode* pChild = pPivot->pLeft;
+   if (!pChild) return;
 
-   // Move y's right subtree to x's left
-   x->pLeft = y->pRight;
-   if (y->pRight)
-      y->pRight->pParent = x;
+   // Move child's right subtree to pivot's left
+   pPivot->pLeft = pChild->pRight;
+   if (pChild->pRight)
+      pChild->pRight->pParent = pPivot;
 
-   // Link y to x's parent
-   y->pParent = x->pParent;
-   if (!x->pParent)
+   // Attach child to pivot's parent
+   pChild->pParent = pPivot->pParent;
+   if (pPivot->pParent)
    {
-      // x was root; BST::insert will fix root afterward
+      if (pPivot == pPivot->pParent->pLeft)
+         pPivot->pParent->pLeft = pChild;
+      else
+         pPivot->pParent->pRight = pChild;
    }
-   else if (x == x->pParent->pLeft)
-      x->pParent->pLeft = y;
-   else
-      x->pParent->pRight = y;
 
-   // Put x on y's right
-   y->pRight = x;
-   x->pParent = y;
+   // Put pivot on child's right
+   pChild->pRight = pPivot;
+   pPivot->pParent = pChild;
 }
+
 
 /*************************************************
  *************************************************
