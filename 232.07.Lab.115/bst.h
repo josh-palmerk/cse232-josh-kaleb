@@ -543,8 +543,6 @@ typename BST<T>::iterator BST<T>::erase(iterator& it)
       while (succ->pLeft)
          succ = succ->pLeft;
 
-      pResult = succ;
-
       // detach succ from its current position
       BNode* succParent = succ->pParent;
       BNode* succChild = succ->pRight; // succ always has no left child
@@ -573,6 +571,8 @@ typename BST<T>::iterator BST<T>::erase(iterator& it)
          pToRemove->pParent->pLeft = succ;
       else
          pToRemove->pParent->pRight = succ;
+
+      pResult = succ;
    }
 
 
@@ -590,6 +590,11 @@ typename BST<T>::iterator BST<T>::erase(iterator& it)
          pToRemove->pParent->pLeft = child;
       else
          pToRemove->pParent->pRight = child;
+
+      // iterator should point to in-order successor
+      pResult = child;
+      while (pResult->pLeft)
+         pResult = pResult->pLeft;
    }
    else
    {
@@ -600,15 +605,13 @@ typename BST<T>::iterator BST<T>::erase(iterator& it)
          pToRemove->pParent->pLeft = nullptr;
       else
          pToRemove->pParent->pRight = nullptr;
+      pResult = pToRemove->pParent;
    }
    --numElements;
+
    delete pToRemove;
    pToRemove = nullptr;
-   if (pResult)
-      return iterator(pResult);
-   else
-      return end();
-
+   return iterator(pResult);
 }
 
 /*****************************************************
