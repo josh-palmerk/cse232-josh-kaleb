@@ -422,6 +422,7 @@ std::pair<typename BST <T> :: iterator, bool> BST <T> :: insert(const T & t, boo
 
    BNode* current = root;
    BNode* parent = nullptr;
+   bool goLeft = true;
 
    while (current != nullptr)
    {
