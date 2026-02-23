@@ -422,65 +422,6 @@ std::pair<typename BST <T> :: iterator, bool> BST <T> :: insert(const T & t, boo
 
    BNode* current = root;
    BNode* parent = nullptr;
-   bool goLeft = true;   // remembers which side we went last
-
-   while (current != nullptr)
-   {
-      parent = current;
-
-      if (keepUnique && t == current->data)
-         return std::make_pair(iterator(current), false);
-
-      if (t < current->data)          // <-- the single '<' in the method
-      {
-         goLeft = true;
-         current = current->pLeft;
-      }
-      else
-      {
-         goLeft = false;
-         current = current->pRight;
-      }
-   }
-
-   // Now we know parent and which side (goLeft) to attach on
-   BNode* newNode = new BNode(t);
-   newNode->isRed = true;   // new nodes are red
-   newNode->pParent = parent;
-
-   if (goLeft)
-      parent->pLeft = newNode;
-   else
-      parent->pRight = newNode;
-
-   ++numElements;
-
-   // Balance the tree after insertion
-   newNode->balance();
-
-   // Update root if necessary
-   while (root->pParent)
-      root = root->pParent;
-
-   root->isRed = false; // root is always black
-
-   return std::make_pair(iterator(newNode), true);
-}
-
-template <typename T>
-std::pair<typename BST <T> ::iterator, bool> BST <T> ::insert(T&& t, bool keepUnique)
-{
-   if (root == nullptr)
-   {
-      root = new BNode(std::move(t));
-      root->balance(); // root is always black
-      ++numElements;
-      return std::make_pair(iterator(root), true);
-   }
-
-   BNode* current = root;
-   BNode* parent = nullptr;
-   bool goLeft = true;   // remembers which side we went down last
 
    while (current != nullptr)
    {
@@ -501,9 +442,65 @@ std::pair<typename BST <T> ::iterator, bool> BST <T> ::insert(T&& t, bool keepUn
       }
    }
 
-   // Now we know parent and which side (goLeft) to attach on
+   BNode* newNode = new BNode(t);
+   newNode->isRed = true;
+   newNode->pParent = parent;
+
+   if (goLeft)
+      parent->pLeft = newNode;
+   else
+      parent->pRight = newNode;
+
+   ++numElements;
+
+   // Balance the tree after insertion
+   newNode->balance();
+
+   // Update root if necessary
+   while (root->pParent)
+      root = root->pParent;
+
+   root->isRed = false;
+
+   return std::make_pair(iterator(newNode), true);
+}
+
+template <typename T>
+std::pair<typename BST <T> ::iterator, bool> BST <T> ::insert(T&& t, bool keepUnique)
+{
+   if (root == nullptr)
+   {
+      root = new BNode(std::move(t));
+      root->balance();
+      ++numElements;
+      return std::make_pair(iterator(root), true);
+   }
+
+   BNode* current = root;
+   BNode* parent = nullptr;
+   bool goLeft = true;
+
+   while (current != nullptr)
+   {
+      parent = current;
+
+      if (keepUnique && t == current->data)
+         return std::make_pair(iterator(current), false);
+
+      if (t < current->data)
+      {
+         goLeft = true;
+         current = current->pLeft;
+      }
+      else
+      {
+         goLeft = false;
+         current = current->pRight;
+      }
+   }
+
    BNode* newNode = new BNode(std::move(t));
-   newNode->isRed = true;   // new nodes are red
+   newNode->isRed = true;
    newNode->pParent = parent;
 
    if (goLeft)
@@ -519,7 +516,7 @@ std::pair<typename BST <T> ::iterator, bool> BST <T> ::insert(T&& t, bool keepUn
    while (root->pParent)
       root = root->pParent;
 
-   root->balance(); // root is always black
+   root->balance();
 
    return std::make_pair(iterator(newNode), true);
 }
@@ -529,9 +526,88 @@ std::pair<typename BST <T> ::iterator, bool> BST <T> ::insert(T&& t, bool keepUn
  * Remove a given node as specified by the iterator
  ************************************************/
 template <typename T>
-typename BST <T> ::iterator BST <T> :: erase(iterator & it)
-{  
-   return end();
+typename BST<T>::iterator BST<T>::erase(iterator& it)
+{
+   if (it == end())
+      return end();
+
+   BNode* pToRemove = it.pNode;
+   BNode* pResult = nullptr;
+
+   // Case 1: two children
+   if (pToRemove->pLeft && pToRemove->pRight)
+   {
+      // find in-order successor (leftmost of right subtree)
+      BNode* succ = pToRemove->pRight;
+      while (succ->pLeft)
+         succ = succ->pLeft;
+
+      pResult = succ;
+
+      // detach succ from its current position
+      BNode* succParent = succ->pParent;
+      BNode* succChild = succ->pRight; // succ always has no left child
+
+      if (succParent->pLeft == succ)
+         succParent->pLeft = succChild;
+      else
+         succParent->pRight = succChild;
+
+      if (succChild)
+         succChild->pParent = succParent;
+
+      // now move succ into node's position
+      succ->pParent = pToRemove->pParent;
+      succ->pLeft = pToRemove->pLeft;
+      succ->pRight = (pToRemove->pRight == succ ? succChild : pToRemove->pRight);
+
+      if (succ->pLeft)
+         succ->pLeft->pParent = succ;
+      if (succ->pRight)
+         succ->pRight->pParent = succ;
+
+      if (!pToRemove->pParent)
+         root = succ;
+      else if (pToRemove->pParent->pLeft == pToRemove)
+         pToRemove->pParent->pLeft = succ;
+      else
+         pToRemove->pParent->pRight = succ;
+   }
+
+
+   // Case 2: one child
+   else if (pToRemove->pLeft || pToRemove->pRight)
+   {
+      BNode* child = pToRemove->pLeft ? pToRemove->pLeft : pToRemove->pRight;
+
+      // reattach child to parent
+      child->pParent = pToRemove->pParent;
+
+      if (!pToRemove->pParent)
+         root = child;
+      else if (pToRemove->isLeftChild(pToRemove))
+         pToRemove->pParent->pLeft = child;
+      else
+         pToRemove->pParent->pRight = child;
+   }
+   else
+   {
+      // Case 3: leaf
+      if (!pToRemove->pParent)
+         root = nullptr;
+      else if (pToRemove->isLeftChild(pToRemove))
+         pToRemove->pParent->pLeft = nullptr;
+      else
+         pToRemove->pParent->pRight = nullptr;
+   }
+   --numElements;
+   delete pToRemove;
+   pToRemove = nullptr;
+   if (pResult)
+      return iterator(pResult);
+   else
+      return end();
+
 }
 
 /*****************************************************
