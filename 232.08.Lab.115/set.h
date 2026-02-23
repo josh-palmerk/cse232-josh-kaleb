@@ -59,7 +59,7 @@ public:
    {
        for (const T& t : il)
       {
-         insert(t);
+         insert(t); //this is wrong
 	   }
    }
    template <class Iterator>
@@ -74,18 +74,22 @@ public:
 
    set & operator = (const set & rhs)
    {
+	  this->bst = rhs.bst;
       return *this;
    }
    set & operator = (set && rhs)
    {
+	  this->bst = std::move(rhs.bst);
       return *this;
    }
    set & operator = (const std::initializer_list <T> & il)
    {
+
       return *this;
    }
    void swap(set& rhs) noexcept
    {
+	  bst.swap(rhs.bst);
    }
 
    //
@@ -149,6 +153,7 @@ public:
    //
    void clear() noexcept 
    { 
+      bst.clear();
    }
    iterator erase(iterator &it)
    { 
