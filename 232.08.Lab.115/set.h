@@ -44,27 +44,23 @@ public:
    // 
    // Construct
    //
-   set() 
-   { 
-   }
-   set(const set &  rhs)
-   { 
-
-   }
-   set(set && rhs) 
-   { 
-	   bst = std::move(rhs.bst);
-   }
-   set(const std::initializer_list <T> & il) 
+   set()                 : bst()                   { } // Default
+   set(const set &  rhs) : bst(rhs.bst)            { } // Copy
+   set(set && rhs)       : bst(std::move(rhs.bst)) { } // Move
+   set(const std::initializer_list <T> & il)           // Initializer List
    {
-       for (const T& t : il)
+      clear();
+      for (const T& t : il)
       {
-         insert(t); //this is wrong
-	   }
+          insert(t);
+      }
    }
+   
    template <class Iterator>
-   set(Iterator first, Iterator last) 
+   set(Iterator first, Iterator last) // Range
    {
+      clear();
+      insert(first, last);
    }
   ~set() { }
 
@@ -77,16 +73,23 @@ public:
 	  this->bst = rhs.bst;
       return *this;
    }
+   
    set & operator = (set && rhs)
    {
 	  this->bst = std::move(rhs.bst);
       return *this;
    }
+   
    set & operator = (const std::initializer_list <T> & il)
    {
-
+      clear();
+      for (const T& t : il)
+      {
+          insert(t);
+      }
       return *this;
    }
+   
    void swap(set& rhs) noexcept
    {
 	  bst.swap(rhs.bst);
@@ -111,7 +114,7 @@ public:
    //
    iterator find(const T& t) 
    { 
-      return iterator(); 
+      return iterator(bst.find(t));
    }
 
    //
@@ -163,21 +166,33 @@ public:
    { 
       bst.clear();
    }
-   iterator erase(iterator &it)
-   { 
+   iterator erase(iterator &it) // Iterator
+   {
 	   return bst.erase(it.it);
    }
-   size_t erase(const T & t) 
+   size_t erase(const T & t) // Element
    {
-      return 99;
+      auto it = find(t);
+      if(it == end())
+      {
+         return 0;
+      }
+      
+      erase(it);
+      
+      return 1;
    }
-   iterator erase(iterator &itBegin, iterator &itEnd)
+   iterator erase(iterator &itBegin, iterator &itEnd) // Range
    {
-      return iterator();
+      while(itBegin != itEnd)
+      {
+         itBegin = erase(itBegin);
+      }
+      return itEnd;
    }
 
 private:
-   
+   class BST;
    custom::BST <T> bst;
 };
 
