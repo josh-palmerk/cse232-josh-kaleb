@@ -131,20 +131,28 @@ public:
    //
    std::pair<iterator, bool> insert(const T& t)
    {
-      std::pair<iterator, bool> p(iterator(), true);
-      return p;
+	   return bst.insert(t, true);
    }
    std::pair<iterator, bool> insert(T&& t)
    {
-      std::pair<iterator, bool> p(iterator(), true);
-      return p;
+	   return bst.insert(std::move(t), true);
    }
    void insert(const std::initializer_list <T>& il)
    {
+       for (const T& t : il)
+      {
+         insert(t);
+	   }
+
    }
    template <class Iterator>
    void insert(Iterator first, Iterator last)
    {
+       for (Iterator it = first; it != last; ++it)
+      {
+         insert(*it);
+	   }
+
    }
 
 
@@ -157,7 +165,7 @@ public:
    }
    iterator erase(iterator &it)
    { 
-      return iterator(); 
+	   return bst.erase(it.it);
    }
    size_t erase(const T & t) 
    {
