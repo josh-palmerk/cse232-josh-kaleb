@@ -300,26 +300,7 @@ BST <T> :: BST()
 template <typename T>
 BST <T> :: BST(const BST<T>& rhs) : numElements(rhs.numElements), root(nullptr)
 {
-   if (!rhs.root)
-      return;
-
-   // recursive lambda to copy the tree
-   std::function<BNode*(const BNode*, BNode*)> copy = [&](const BNode* pSrc, BNode* pParent) -> BNode*
-   {
-      if (!pSrc)
-         return nullptr;
-
-      BNode* pNew = new BNode(pSrc->data);
-      pNew->isRed = pSrc->isRed;
-      pNew->pParent = pParent;
-
-      pNew->pLeft  = copy(pSrc->pLeft,  pNew);
-      pNew->pRight = copy(pSrc->pRight, pNew);
-
-      return pNew;
-   };
-
-   root = copy(rhs.root, nullptr);
+   *this = rhs;
 }
 
 /*********************************************
