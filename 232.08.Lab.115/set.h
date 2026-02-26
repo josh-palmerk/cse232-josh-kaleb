@@ -184,7 +184,7 @@ public:
    }
    iterator erase(iterator &itBegin, iterator &itEnd) // Range
    {
-      while(itBegin != itEnd)
+      while(++itBegin != itEnd)
       {
          itBegin = erase(itBegin);
       }
