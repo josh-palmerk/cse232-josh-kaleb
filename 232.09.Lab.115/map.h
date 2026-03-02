@@ -14,7 +14,7 @@
  *        map                 : A class that represents a map
  *        map::iterator       : An iterator through a map
  * Author
- *    <your names here>
+ *    Josh, Kaleb, Spencer
  ************************************************************************/
 
 #pragma once
@@ -57,9 +57,11 @@ public:
    }
    map(const map &  rhs) 
    { 
+	   bst = rhs.bst;
    }
    map(map && rhs) 
    { 
+	   bst = std::move(rhs.bst);
    }
    template <class Iterator>
    map(Iterator first, Iterator last) 
@@ -70,6 +72,7 @@ public:
    }
   ~map()         
    {
+	  bst.clear(); //wrong?
    }
 
    //
@@ -77,10 +80,12 @@ public:
    //
    map & operator = (const map & rhs) 
    {
+	  bst = rhs.bst;
       return *this;
    }
    map & operator = (map && rhs)
    {
+	  bst = std::move(rhs.bst);
       return *this;
    }
    map & operator = (const std::initializer_list <Pairs> & il)
@@ -94,11 +99,11 @@ public:
    class iterator;
    iterator begin() 
    { 
-      return iterator();
+	  return iterator(bst.begin());
    }
    iterator end() 
    { 
-      return iterator();    
+      return iterator(bst.end());    
    }
 
    // 
@@ -110,7 +115,7 @@ public:
          V & at (const K& k);
    iterator find(const K & k)
    {
-      return iterator();
+	  return iterator(bst.find(Pairs(k, V())));
    }
 
    //
@@ -138,6 +143,7 @@ public:
    //
    void clear() noexcept
    {
+	   bst.clear();
    }
    size_t erase(const K& k);
    iterator erase(iterator it);
@@ -148,11 +154,11 @@ public:
    //
    bool empty() const noexcept 
    { 
-      return true; 
+	   return bst.empty();
    }
    size_t size() const noexcept 
    { 
-      return 99;
+	   return bst.size();
    }
 
 
@@ -183,9 +189,11 @@ public:
    }
    iterator(const typename BST < pair <K, V> > :: iterator & rhs)
    { 
+	  it = rhs;
    }
    iterator(const iterator & rhs) 
    { 
+	  it = rhs.it;
    }
 
    //
@@ -193,6 +201,7 @@ public:
    //
    iterator & operator = (const iterator & rhs)
    {
+	  it = rhs.it;
       return *this;
    }
 
@@ -201,11 +210,11 @@ public:
    //
    bool operator == (const iterator & rhs) const 
    { 
-      return true;
+	   return it == rhs.it;
    }
    bool operator != (const iterator & rhs) const 
    { 
-      return true;
+	   return it != rhs.it;
    }
 
    // 
@@ -213,7 +222,7 @@ public:
    //
    const pair <K, V> & operator * () const
    {
-      return *(new pair<K, V>);
+	   return *it;
    }
 
    //
@@ -221,19 +230,26 @@ public:
    //
    iterator & operator ++ ()
    {
-      return *this;
+	  ++it;
+	  return *this;
    }
    iterator operator ++ (int postfix)
    {
-      return *this;
+	  iterator temp(*this);
+	  ++it;
+	  return temp;
+
    }
    iterator & operator -- ()
    {
-      return *this;
+	  --it;
+	  return *this;
    }
    iterator  operator -- (int postfix)
    {
-      return *this;
+	  iterator temp(*this);
+      --it;
+	  return temp;
    }
 
 private:
@@ -290,6 +306,7 @@ const V& map <K, V> ::at(const K& key) const
 template <typename K, typename V>
 void swap(map <K, V>& lhs, map <K, V>& rhs)
 {
+	lhs.bst.swap(rhs.bst);
 }
 
 /*****************************************************
