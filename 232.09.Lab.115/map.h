@@ -92,6 +92,8 @@ public:
    }
    map & operator = (const std::initializer_list <Pairs> & il)
    {
+      clear();
+      insert(il);
       return *this;
    }
    
