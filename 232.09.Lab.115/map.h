@@ -328,8 +328,13 @@ void swap(map <K, V>& lhs, map <K, V>& rhs)
 template <typename K, typename V>
 size_t map<K, V>::erase(const K& k)
 {
-   return size_t(99);
+   iterator it = find(k);
+   if (it == end())
+      return 0;
+   erase(it);
+   return 1;
 }
+
 
 /*****************************************************
  * ERASE
@@ -338,7 +343,12 @@ size_t map<K, V>::erase(const K& k)
 template <typename K, typename V>
 typename map<K, V>::iterator map<K, V>::erase(map<K, V>::iterator first, map<K, V>::iterator last)
 {
-   return iterator();
+   iterator it = first;
+   while (it != last)
+   {
+      it = erase(it);
+   }
+   return it;
 }
 
 /*****************************************************
@@ -348,7 +358,7 @@ typename map<K, V>::iterator map<K, V>::erase(map<K, V>::iterator first, map<K, 
 template <typename K, typename V>
 typename map<K, V>::iterator map<K, V>::erase(map<K, V>::iterator it)
 {
-   return iterator();
+   return bst.erase(it.it);
 }
 
 }; //  namespace custom
