@@ -115,7 +115,7 @@ public:
          V & at (const K& k);
    iterator find(const K & k)
    {
-	  return iterator(bst.find(Pairs(k, V())));
+	   return iterator(bst.find(k));
    }
 
    //
