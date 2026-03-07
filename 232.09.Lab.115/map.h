@@ -66,9 +66,11 @@ public:
    template <class Iterator>
    map(Iterator first, Iterator last) 
    {
+      insert(first, last);
    }
    map(const std::initializer_list <Pairs>& il) 
    {
+      insert(il);
    }
   ~map()         
    {
@@ -135,17 +137,14 @@ public:
    template <class Iterator>
    void insert(Iterator first, Iterator last)
    {
-      iterator it(first);
-      while (it != last)
-      {
-         insert(*it);
-         ++it;
-      }
+      for (auto it = first; it != last; ++it)
+         bst.insert(*it, true);
    }
 
    void insert(const std::initializer_list <Pairs>& il)
    {
-      bst.insert(il);
+      for (auto&& element : il)
+         bst.insert(element, true);
    }
 
    //
