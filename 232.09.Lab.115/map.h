@@ -201,11 +201,11 @@ public:
    }
    iterator(const typename BST < pair <K, V> > :: iterator & rhs)
    { 
-	  it = rhs;
+	   it = rhs;
    }
    iterator(const iterator & rhs) 
    { 
-	  it = rhs.it;
+	   it = rhs.it;
    }
 
    //
@@ -213,7 +213,7 @@ public:
    //
    iterator & operator = (const iterator & rhs)
    {
-	  it = rhs.it;
+	   it = rhs.it;
       return *this;
    }
 
@@ -232,10 +232,11 @@ public:
    // 
    // Access
    //
-   const pair <K, V> & operator * () const
-   {
-	   return *it;
-   }
+   auto & operator*() { return *it; }
+   auto * operator->() { return &(*it); }
+
+   const auto & operator*() const { return *it; }
+   const auto * operator->() const { return &(*it); }
 
    //
    // Increment
@@ -278,7 +279,13 @@ private:
 template <typename K, typename V>
 V& map <K, V> :: operator [] (const K& key)
 {
-   return *(new V);
+   iterator it = find(key);
+
+   if (it != end())
+      return it.it.pNode->data.second;
+
+   auto result = insert(custom::pair<K, V>(key, V{}));
+   return result.first.it.pNode->data.second;
 }
 
 /*****************************************************
@@ -288,7 +295,8 @@ V& map <K, V> :: operator [] (const K& key)
 template <typename K, typename V>
 const V& map <K, V> :: operator [] (const K& key) const
 {
-   return *(new V);
+   auto it = find(key);
+   return it.it.pNode->data.second;
 }
 
 /*****************************************************
@@ -296,9 +304,14 @@ const V& map <K, V> :: operator [] (const K& key) const
  * Retrieve an element from the map
  ****************************************************/
 template <typename K, typename V>
-V& map <K, V> ::at(const K& key)
+V& map<K, V>::at(const K& key)
 {
-   return *(new V);
+   iterator it = find(key);
+
+   if (it == end())
+      throw std::out_of_range("invalid map<K, T> key");
+
+   return it.it.pNode->data.second;
 }
 
 /*****************************************************
@@ -306,9 +319,14 @@ V& map <K, V> ::at(const K& key)
  * Retrieve an element from the map
  ****************************************************/
 template <typename K, typename V>
-const V& map <K, V> ::at(const K& key) const
+const V& map<K, V>::at(const K& key) const
 {
-   return *(new V);
+   auto it = find(key);
+
+   if (it == end())
+      throw std::out_of_range("invalid map<K, T> key");
+
+   return it.it.pNode->data.second;
 }
 
 /*****************************************************
