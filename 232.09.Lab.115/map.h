@@ -82,12 +82,12 @@ public:
    //
    map & operator = (const map & rhs) 
    {
-	  bst = rhs.bst;
+	   bst = rhs.bst;
       return *this;
    }
    map & operator = (map && rhs)
    {
-	  bst = std::move(rhs.bst);
+	   bst = std::move(rhs.bst);
       return *this;
    }
    map & operator = (const std::initializer_list <Pairs> & il)
@@ -125,7 +125,7 @@ public:
    //
    // Insert
    //
-   custom::pair<typename map::iterator, bool> insert(Pairs && rhs)
+   custom::pair<typename map::iterator, bool> insert(Pairs&& rhs)
    {
       auto result = bst.insert(std::move(rhs));
       return make_pair(iterator(result.first), result.second);
@@ -278,15 +278,15 @@ private:
  * Retrieve an element from the map
  ****************************************************/
 template <typename K, typename V>
-V& map <K, V> :: operator [] (const K& key)
+V& map<K, V>::operator[](const K& key)
 {
    iterator it = find(key);
-
    if (it != end())
       return it.it.pNode->data.second;
-
-   auto result = insert(custom::pair<K, V>(key, V{}));
-   return result.first.it.pNode->data.second;
+   Pairs temp;
+   temp.first = key;
+   auto result = bst.insert(temp, true);
+   return result.first.pNode->data.second;
 }
 
 /*****************************************************
