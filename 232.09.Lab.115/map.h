@@ -123,19 +123,29 @@ public:
    //
    custom::pair<typename map::iterator, bool> insert(Pairs && rhs)
    {
-      return make_pair(iterator(), true);
+      auto result = bst.insert(std::move(rhs));
+      return make_pair(iterator(result.first), result.second);
    }
    custom::pair<typename map::iterator, bool> insert(const Pairs & rhs)
    {
-      return make_pair(iterator(), true);
+      auto result = bst.insert(rhs);
+      return make_pair(iterator(result.first), result.second);
    }
 
    template <class Iterator>
    void insert(Iterator first, Iterator last)
    {
+      iterator it(first);
+      while (it != last)
+      {
+         insert(*it);
+         ++it;
+      }
    }
+
    void insert(const std::initializer_list <Pairs>& il)
    {
+      bst.insert(il);
    }
 
    //
@@ -145,6 +155,7 @@ public:
    {
 	   bst.clear();
    }
+
    size_t erase(const K& k);
    iterator erase(iterator it);
    iterator erase(iterator first, iterator last);
@@ -156,6 +167,7 @@ public:
    { 
 	   return bst.empty();
    }
+
    size_t size() const noexcept 
    { 
 	   return bst.size();
