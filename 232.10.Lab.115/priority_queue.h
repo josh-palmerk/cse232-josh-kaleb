@@ -48,9 +48,11 @@ public:
    }
    priority_queue(const priority_queue &  rhs, const Compare & c = Compare())  
    { 
+	   container = rhs.container;
    }
    priority_queue(priority_queue && rhs, const Compare & c = Compare())  
    { 
+	   container = std::move(rhs.container);
    }
    template <class Iterator>
    priority_queue(Iterator first, Iterator last, const Compare & c = Compare()) 
