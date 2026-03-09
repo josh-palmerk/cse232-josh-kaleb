@@ -87,11 +87,11 @@ public:
    //
    size_t size()  const 
    { 
-      return 99;   
+	  return container.size();
    }
    bool empty() const 
    { 
-      return false;  
+      return container.empty();  
    }
    
 private:
@@ -109,9 +109,10 @@ private:
  * Get the maximum item from the heap: the top item.
  ***********************************************/
 template <class T, class Container, class Compare>
-const T & priority_queue <T, Container, Compare> :: top() const
+const T& priority_queue <T, Container, Compare> ::top() const
 {
-   return *(new T);
+    if (container.empty()) throw std::out_of_range("std:out_of_range");
+    return container[0];
 }
 
 /**********************************************
