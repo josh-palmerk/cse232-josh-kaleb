@@ -146,18 +146,41 @@ void priority_queue <T, Container, Compare> :: push(T && t)
  * Return TRUE if anything changed.
  ************************************************/
 template <class T, class Container, class Compare>
-bool priority_queue <T, Container, Compare> :: percolateDown(size_t indexHeap)
+bool priority_queue<T, Container, Compare>::percolateDown(size_t indexHeap)
 {
+   size_t indexLeft = 2 * indexHeap;
+   if (indexLeft > size())
+      return false;
+   size_t indexRight = indexLeft + 1;
+   size_t indexBigger;
+
+   if (indexRight <= size() && compare(container[indexLeft - 1], container[indexRight - 1]))
+   {
+      indexBigger = indexRight;
+   }
+   else
+   {
+      indexBigger = indexLeft;
+   }
+   if (compare(container[indexHeap - 1], container[indexBigger - 1]))
+   {
+      std::swap(container[indexHeap - 1], container[indexBigger - 1]);
+      percolateDown(indexBigger);
+      return true;
+   }
    return false;
 }
+
 
 /************************************************
  * P QUEUE :: HEAPIFY
  * Turn the container into a heap.
  ************************************************/
 template <class T, class Container, class Compare>
-void priority_queue <T, Container, Compare> ::heapify()
+void priority_queue<T, Container, Compare>::heapify()
 {
+   for (size_t i = size() / 2; i > 0; --i)
+      percolateDown(i);
 }
 
 /************************************************
@@ -165,9 +188,10 @@ void priority_queue <T, Container, Compare> ::heapify()
  * Swap the contents of two priority queues
  ************************************************/
 template <class T, class Container, class Compare>
-inline void swap(custom::priority_queue <T, Container, Compare> & lhs,
-                 custom::priority_queue <T, Container, Compare> & rhs)
+inline void swap(custom::priority_queue<T, Container, Compare>& lhs,
+   custom::priority_queue<T, Container, Compare>& rhs)
 {
+   std::swap(lhs.container, rhs.container);
+   std::swap(lhs.compare, rhs.compare);
 }
-
-}; 
+};
