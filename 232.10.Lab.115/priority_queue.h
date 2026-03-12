@@ -45,24 +45,37 @@ public:
    //
    priority_queue(const Compare & c = Compare()) 
    {
+
    }
    priority_queue(const priority_queue &  rhs, const Compare & c = Compare())  
    { 
 	   container = rhs.container;
+      heapify();
    }
    priority_queue(priority_queue && rhs, const Compare & c = Compare())  
    { 
 	   container = std::move(rhs.container);
+      heapify();
    }
    template <class Iterator>
    priority_queue(Iterator first, Iterator last, const Compare & c = Compare()) 
    {
+      while (first != last)
+      {
+         container.push_back(*first);
+         ++first;
+      }
+      heapify();
    }
    explicit priority_queue (const Compare& c, Container && rhs) 
    {
+      container = std::move(rhs);
+      heapify();
    }
    explicit priority_queue (const Compare& c, Container & rhs) 
    {
+      container = rhs;
+      heapify();
    }
   ~priority_queue() 
    {
@@ -124,6 +137,12 @@ const T& priority_queue <T, Container, Compare> ::top() const
 template <class T, class Container, class Compare>
 void priority_queue <T, Container, Compare> :: pop()
 {
+   if (!container.empty())
+   {
+      std::swap(container[0], container.back());
+      container.pop_back();
+      percolateDown(1);
+   }
 }
 
 /*****************************************
@@ -131,12 +150,45 @@ void priority_queue <T, Container, Compare> :: pop()
  * Add a new element to the heap, reallocating as necessary
  ****************************************/
 template <class T, class Container, class Compare>
-void priority_queue <T, Container, Compare> :: push(const T & t)
+void priority_queue<T, Container, Compare>::push(const T& t)
 {
+   container.push_back(t);
+   size_t indexChild = container.size();
+   while (indexChild > 1)
+   {
+      size_t indexParent = indexChild / 2;
+
+      if (compare(container[indexParent - 1], container[indexChild - 1]))
+      {
+         std::swap(container[indexParent - 1], container[indexChild - 1]);
+         indexChild = indexParent;
+      }
+      else
+      {
+         break;
+      }
+   }
 }
+
 template <class T, class Container, class Compare>
 void priority_queue <T, Container, Compare> :: push(T && t)
 {
+   container.push_back(std::move(t));
+   size_t indexChild = container.size();
+   while (indexChild > 1)
+   {
+      size_t indexParent = indexChild / 2;
+
+      if (compare(container[indexParent - 1], container[indexChild - 1]))
+      {
+         std::swap(container[indexParent - 1], container[indexChild - 1]);
+         indexChild = indexParent;
+      }
+      else
+      {
+         break;
+      }
+   }
 }
 
 /************************************************
