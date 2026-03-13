@@ -137,9 +137,10 @@ const T& priority_queue <T, Container, Compare> ::top() const
 template <class T, class Container, class Compare>
 void priority_queue <T, Container, Compare> :: pop()
 {
+   using std::swap;
    if (!container.empty())
    {
-      std::swap(container[0], container.back());
+      swap(container[0], container.back());
       container.pop_back();
       percolateDown(1);
    }
@@ -152,6 +153,7 @@ void priority_queue <T, Container, Compare> :: pop()
 template <class T, class Container, class Compare>
 void priority_queue<T, Container, Compare>::push(const T& t)
 {
+   using std::swap;
    container.push_back(t);
    size_t indexChild = container.size();
    while (indexChild > 1)
@@ -160,7 +162,7 @@ void priority_queue<T, Container, Compare>::push(const T& t)
 
       if (compare(container[indexParent - 1], container[indexChild - 1]))
       {
-         std::swap(container[indexParent - 1], container[indexChild - 1]);
+         swap(container[indexParent - 1], container[indexChild - 1]);
          indexChild = indexParent;
       }
       else
@@ -173,6 +175,7 @@ void priority_queue<T, Container, Compare>::push(const T& t)
 template <class T, class Container, class Compare>
 void priority_queue <T, Container, Compare> :: push(T && t)
 {
+   using std::swap;
    container.push_back(std::move(t));
    size_t indexChild = container.size();
    while (indexChild > 1)
@@ -181,7 +184,7 @@ void priority_queue <T, Container, Compare> :: push(T && t)
 
       if (compare(container[indexParent - 1], container[indexChild - 1]))
       {
-         std::swap(container[indexParent - 1], container[indexChild - 1]);
+         swap(container[indexParent - 1], container[indexChild - 1]);
          indexChild = indexParent;
       }
       else
@@ -200,6 +203,7 @@ void priority_queue <T, Container, Compare> :: push(T && t)
 template <class T, class Container, class Compare>
 bool priority_queue<T, Container, Compare>::percolateDown(size_t indexHeap)
 {
+   using std::swap;
    size_t indexLeft = 2 * indexHeap;
    if (indexLeft > size())
       return false;
@@ -216,7 +220,7 @@ bool priority_queue<T, Container, Compare>::percolateDown(size_t indexHeap)
    }
    if (compare(container[indexHeap - 1], container[indexBigger - 1]))
    {
-      std::swap(container[indexHeap - 1], container[indexBigger - 1]);
+      swap(container[indexHeap - 1], container[indexBigger - 1]);
       percolateDown(indexBigger);
       return true;
    }
