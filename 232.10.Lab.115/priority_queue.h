@@ -173,24 +173,18 @@ void priority_queue<T, Container, Compare>::push(const T& t)
 }
 
 template <class T, class Container, class Compare>
-void priority_queue <T, Container, Compare> :: push(T && t)
+void priority_queue<T, Container, Compare>::push(T&& t)
 {
    using std::swap;
+
    container.push_back(std::move(t));
    size_t indexChild = container.size();
+
    while (indexChild > 1)
    {
       size_t indexParent = indexChild / 2;
-
-      if (compare(container[indexParent - 1], container[indexChild - 1]))
-      {
-         swap(container[indexParent - 1], container[indexChild - 1]);
-         indexChild = indexParent;
-      }
-      else
-      {
-         break;
-      }
+      percolateDown(indexParent);
+      indexChild = indexParent;   // move upward
    }
 }
 
