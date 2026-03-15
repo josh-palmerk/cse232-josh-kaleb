@@ -43,38 +43,44 @@ public:
    //
    // construct
    //
-   priority_queue(const Compare & c = Compare()) 
+   priority_queue(const Compare & c = Compare()) : compare(c)
    {
 
    }
-   priority_queue(const priority_queue &  rhs, const Compare & c = Compare())  
+   priority_queue(const priority_queue &  rhs, const Compare & c = Compare())
+      : container(rhs.container), compare(c)
    { 
-	   container = rhs.container;
       heapify();
    }
-   priority_queue(priority_queue && rhs, const Compare & c = Compare())  
+   priority_queue(priority_queue && rhs, const Compare & c = Compare()) 
+      : container(std::move(rhs.container)), compare(c)
    { 
-	   container = std::move(rhs.container);
       heapify();
    }
    template <class Iterator>
-   priority_queue(Iterator first, Iterator last, const Compare & c = Compare()) 
+   priority_queue(Iterator first, Iterator last, const Compare& c = Compare())
+       : compare(c)
    {
-      while (first != last)
-      {
-         container.push_back(*first);
-         ++first;
-      }
-      heapify();
+       size_t count = 0;
+
+       for (Iterator it = first; it != last; ++it)
+           ++count;
+
+       container.reserve(count);
+
+       for (; first != last; ++first)
+           container.push_back(*first);
+
+       heapify();
    }
    explicit priority_queue (const Compare& c, Container && rhs) 
+      : container(std::move(rhs)), compare(c)
    {
-      container = std::move(rhs);
       heapify();
    }
-   explicit priority_queue (const Compare& c, Container & rhs) 
+   explicit priority_queue (const Compare& c, Container & rhs)
+      : container(rhs), compare(c)
    {
-      container = rhs;
       heapify();
    }
   ~priority_queue() 
@@ -160,33 +166,39 @@ void priority_queue<T, Container, Compare>::push(const T& t)
    {
       size_t indexParent = indexChild / 2;
 
-      if (compare(container[indexParent - 1], container[indexChild - 1]))
-      {
-         swap(container[indexParent - 1], container[indexChild - 1]);
-         indexChild = indexParent;
-      }
-      else
-      {
+      bool less = compare(container[indexParent - 1],
+                          container[indexChild - 1]);
+
+      if (!less)
          break;
-      }
+
+      swap(container[indexParent - 1], container[indexChild - 1]);
+      indexChild = indexParent;
    }
+
 }
 
 template <class T, class Container, class Compare>
 void priority_queue<T, Container, Compare>::push(T&& t)
 {
    using std::swap;
-
    container.push_back(std::move(t));
    size_t indexChild = container.size();
-
    while (indexChild > 1)
    {
       size_t indexParent = indexChild / 2;
-      percolateDown(indexParent);
-      indexChild = indexParent;   // move upward
+
+      bool less = compare(container[indexParent - 1],
+                          container[indexChild - 1]);
+
+      if (!less)
+         break;
+
+      swap(container[indexParent - 1], container[indexChild - 1]);
+      indexChild = indexParent;
    }
 }
+
 
 /************************************************
  * P QUEUE :: PERCOLATE DOWN
@@ -198,27 +210,35 @@ template <class T, class Container, class Compare>
 bool priority_queue<T, Container, Compare>::percolateDown(size_t indexHeap)
 {
    using std::swap;
-   size_t indexLeft = 2 * indexHeap;
-   if (indexLeft > size())
-      return false;
-   size_t indexRight = indexLeft + 1;
-   size_t indexBigger;
+   bool changed = false;
 
-   if (indexRight <= size() && compare(container[indexLeft - 1], container[indexRight - 1]))
+   while (true)
    {
-      indexBigger = indexRight;
+      size_t indexLeft = indexHeap * 2;
+
+      if (indexLeft > size())
+         break;
+
+      size_t indexRight = indexLeft + 1;
+      size_t indexBigger = indexLeft;
+
+      if (indexRight <= size() &&
+         compare(container[indexLeft - 1], container[indexRight - 1]))
+      {
+         indexBigger = indexRight;
+      }
+
+      if (compare(container[indexHeap - 1], container[indexBigger - 1]))
+      {
+         swap(container[indexHeap - 1], container[indexBigger - 1]);
+         indexHeap = indexBigger;
+         changed = true;
+      }
+      else
+          break;
    }
-   else
-   {
-      indexBigger = indexLeft;
-   }
-   if (compare(container[indexHeap - 1], container[indexBigger - 1]))
-   {
-      swap(container[indexHeap - 1], container[indexBigger - 1]);
-      percolateDown(indexBigger);
-      return true;
-   }
-   return false;
+
+   return changed;
 }
 
 
