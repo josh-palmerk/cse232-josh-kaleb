@@ -112,8 +112,8 @@ public:
    //
    // Status
    //
-   size_t size()  const { return 99; }
-   bool   empty() const { return false; }
+   size_t size()  const { return numElements; }
+   bool   empty() const { return numElements == 0; }
    
 private:
    // array index from deque index
@@ -179,6 +179,8 @@ public:
    //
    iterator& operator = (const iterator& rhs)
    {
+	  this->id = rhs.id;
+	  this->d = rhs.d;
       return *this;
    }
 
