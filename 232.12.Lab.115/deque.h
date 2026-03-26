@@ -41,7 +41,12 @@ public:
    // Construct
    //
    deque(const A & a = A()) 
-   { data = nullptr;
+   { 
+       data = nullptr;
+       numCells = 16;        
+       numBlocks = 0;
+       numElements = 0;
+       iaFront = 0;
    }
    deque(deque & rhs);
    ~deque()
@@ -119,19 +124,19 @@ private:
    // array index from deque index
    int iaFromID(int id) const
    {
-      return -1;
+      return (iaFront + id) % (numCells * numBlocks); // (iafront + id) % capacity
    }
 
    // block index from deque index
    int ibFromID(int id) const
    {
-      return -1;
+      return iaFromID(id) / numCells;
    }
 
    // cell index from deque index
    int icFromID(int id) const
    {
-      return -1;
+       return -1; //iaFromID(id) % numCells;
    }
 
    // reallocate
@@ -171,13 +176,13 @@ public:
    {
    }
    iterator(const iterator& rhs) 
-   { 
+   {
    }
 
    //
    // Assign
    //
-   iterator& operator = (const iterator& rhs)
+   iterator& operator = (const iterator& rhs) //untested
    {
 	  this->id = rhs.id;
 	  this->d = rhs.d;
@@ -187,8 +192,8 @@ public:
    // 
    // Compare
    //
-   bool operator != (const iterator& rhs) const { return true; }
-   bool operator == (const iterator& rhs) const { return true; }
+   bool operator != (const iterator& rhs) const { return this->id != rhs.id || this->d != rhs.d; }
+   bool operator == (const iterator& rhs) const { return this->id == rhs.id && this->d == rhs.d; }
 
    // 
    // Access
