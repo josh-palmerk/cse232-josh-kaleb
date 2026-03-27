@@ -64,11 +64,11 @@ public:
    class iterator;
    iterator begin() 
    { 
-      return iterator(); 
+      return iterator(0, this); 
    }
    iterator end()   
    { 
-      return iterator(); 
+      return iterator(numElements, this); 
    }
 
    // 
@@ -92,11 +92,11 @@ public:
    }
    T & operator[](int id)
    {
-      return *(new T);
+      return data[ibFromID(id)][icFromID(id)];
    }
    const T & operator[](int id) const
    {
-      return *(new T);
+      return data[ibFromID(id)][icFromID(id)];
    }
 
    //
@@ -136,7 +136,7 @@ private:
    // cell index from deque index
    int icFromID(int id) const
    {
-       return -1; //iaFromID(id) % numCells;
+       return iaFromID(id) % numCells;
    }
 
    // reallocate
@@ -174,18 +174,22 @@ public:
    }
    iterator(int id, deque* d) 
    {
+      this->id = id;
+      this->d = d;
    }
    iterator(const iterator& rhs) 
    {
+      this->id = rhs.id;
+      this->d = rhs.d;
    }
 
    //
    // Assign
    //
-   iterator& operator = (const iterator& rhs) //untested
+   iterator& operator = (const iterator& rhs)
    {
-	  this->id = rhs.id;
-	  this->d = rhs.d;
+	   this->id = rhs.id;
+	   this->d = rhs.d;
       return *this;
    }
 
@@ -200,7 +204,7 @@ public:
    //
    T& operator * ()
    {
-      return *(new T);
+      return (*d)[id];
    }
 
    // 
@@ -208,27 +212,34 @@ public:
    //
    int operator - (iterator it) const
    {
-      return 99;
+      return id - it.id;
    }
    iterator& operator += (int offset)
    {
+      id += offset;
       return *this;
    }
    iterator& operator ++ ()
    {
+      ++id;
       return *this;
    }
    iterator operator ++ (int postfix)
    {
-      return *this;
+      iterator temp = *this;
+      ++id;
+      return temp;
    }
    iterator& operator -- ()
    {
+      --id;
       return *this;
    }
    iterator operator -- (int postfix)
    {
-      return *this;
+      iterator temp = *this;
+      --id;
+      return temp;
    }
 
 private:
@@ -244,6 +255,7 @@ private:
 template <typename T, typename A>
 deque <T, A> ::deque(deque& rhs) 
 {
+
 }
 
 /*****************************************
@@ -254,6 +266,22 @@ deque <T, A> ::deque(deque& rhs)
 template <typename T, typename A>
 deque <T, A> & deque <T, A> :: operator = (deque & rhs)
 {
+   deque <T, A> ::iterator itLHS = begin();
+   deque <T, A> ::iterator itRHS = rhs.begin();
+   while (itLHS != end() && itRHS != rhs.end())
+   {
+      *itLHS = *itRHS;
+      ++itLHS;
+      ++itRHS;
+   }
+   while (end() != itLHS) {
+      pop_back();
+   }
+   while (itRHS != rhs.end())
+   {
+      push_back(*itRHS);
+      ++itRHS;
+   }
    return *this;
 }
 
@@ -273,6 +301,7 @@ void deque <T, A> ::push_back(const T& t)
 template <typename T, typename A>
 void deque <T, A> ::push_back(T && t)
 {
+
 }
 
 /*****************************************
@@ -300,6 +329,19 @@ void deque <T, A> ::push_front(T&& t)
 template <typename T, typename A>
 void deque <T, A> ::clear()
 {
+   for (int id = 0; id < numElements; id++)
+   {
+      alloc.destroy(&data[ibFromID(id)][icFromID(id)]);
+   }
+   for (int ib = 0; ib < numBlocks; ib++)
+   {
+      if (data[ib] != nullptr)
+      {
+         alloc.deallocate(data[ib], numCells);
+         data[ib] = nullptr;
+      }
+   }
+   numElements = 0;
 }
 
 /*****************************************
@@ -307,8 +349,35 @@ void deque <T, A> ::clear()
  * Remove the front element from a deque
  ****************************************/
 template <typename T, typename A>
-void deque <T, A> :: pop_front()
+void deque<T, A>::pop_front()
 {
+   // id of the element to remove (always 0 for pop_front)
+   int idRemove = 0;
+
+   // destroy the front element
+   alloc.destroy(&data[ibFromID(idRemove)][icFromID(idRemove)]);
+
+   // determine whether the block should be deleted
+   bool deleteBlock =
+      (numElements == 1) ||
+      (icFromID(idRemove) == numCells - 1 && ibFromID(idRemove) != ibFromID(numElements - 1));
+
+   if (deleteBlock)
+   {
+      int ib = ibFromID(idRemove);
+
+      // deallocate the block using allocator
+      alloc.deallocate(data[ib], numCells);
+
+      // mark the block as empty
+      data[ib] = nullptr;
+   }
+
+   // advance the front index
+   iaFront = (iaFront + 1) % (numCells * numBlocks);
+
+   // one fewer element now
+   numElements--;
 }
 
 /*****************************************
@@ -316,8 +385,32 @@ void deque <T, A> :: pop_front()
  * Remove the back element from a deque
  ****************************************/
 template <typename T, typename A>
-void deque <T, A> ::pop_back()
+void deque<T, A>::pop_back()
 {
+   // id of the element to remove
+   int idRemove = numElements - 1;
+
+   // destroy the element at the back
+   alloc.destroy(&data[ibFromID(idRemove)][icFromID(idRemove)]);
+
+   // determine whether the block should be deleted
+   bool deleteBlock =
+      (numElements == 1) ||
+      (icFromID(idRemove) == 0 && ibFromID(idRemove) != ibFromID(0));
+
+   if (deleteBlock)
+   {
+      int ib = ibFromID(idRemove);
+
+      // deallocate the block using allocator
+      alloc.deallocate(data[ib], numCells);
+
+      // mark the block as empty
+      data[ib] = nullptr;
+   }
+
+   // one fewer element now
+   numElements--;
 }
 
 /*****************************************
@@ -327,9 +420,7 @@ void deque <T, A> ::pop_back()
 template <typename T, typename A>
 void deque <T, A> :: reallocate(int numBlocksNew)
 {
+
 }
-
-
-
 
 } // namespace custom
