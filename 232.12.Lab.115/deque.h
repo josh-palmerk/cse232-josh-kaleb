@@ -266,22 +266,6 @@ deque <T, A> ::deque(deque& rhs)
 template <typename T, typename A>
 deque <T, A> & deque <T, A> :: operator = (deque & rhs)
 {
-   deque <T, A> ::iterator itLHS = begin();
-   deque <T, A> ::iterator itRHS = rhs.begin();
-   while (itLHS != end() && itRHS != rhs.end())
-   {
-      *itLHS = *itRHS;
-      ++itLHS;
-      ++itRHS;
-   }
-   while (end() != itLHS) {
-      pop_back();
-   }
-   while (itRHS != rhs.end())
-   {
-      push_back(*itRHS);
-      ++itRHS;
-   }
    return *this;
 }
 
