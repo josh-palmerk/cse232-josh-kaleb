@@ -12,7 +12,7 @@
  *
  *    This will contain the class definition of:
  *        deque                 : A class that represents a deque
- *        deque::iterator       : An iterator through a deque
+ *        deque :: iterator       : An iterator through a deque
  * Author
  *    Josh, Kaleb, Spencer
  ************************************************************************/
@@ -21,7 +21,7 @@
 
 // Debug stuff
 #include <cassert>
-#include <memory>   // for std::allocator
+#include <memory>   // for std :: allocator
 
 class TestDeque;    // forward declaration for TestDeque unit test class
 
@@ -31,10 +31,10 @@ namespace custom
 /******************************************************
  * DEQUE
  *****************************************************/
-template <typename T, typename A = std::allocator<T>>
+template <typename T, typename A = std :: allocator<T>>
 class deque
 {
-   friend class ::TestDeque; // give unit tests access to the privates
+   friend class :: TestDeque; // give unit tests access to the privates
 public:
 
    // 
@@ -190,9 +190,9 @@ private:
  * that ++ and -- both work.  Not all iterators are that way.
  *************************************************/
 template <typename T, typename A>
-class deque <T, A> ::iterator
+class deque <T, A> :: iterator
 {
-   friend class ::TestDeque; // give unit tests access to the privates
+   friend class :: TestDeque; // give unit tests access to the privates
 public:
    // 
    // Construct
@@ -281,7 +281,7 @@ private:
  * call the copy constructor on each element
  ****************************************/
 template <typename T, typename A>
-deque<T, A>::deque(deque& rhs): deque()
+deque<T, A> :: deque(deque& rhs): deque()
 {
    for (int i = 0; i < rhs.numElements; ++i)
       push_back(rhs[i]);
@@ -293,7 +293,7 @@ deque<T, A>::deque(deque& rhs): deque()
  * call the copy constructor on each element
  ****************************************/
 template <typename T, typename A>
-deque<T, A>& deque<T, A>::operator=(deque& rhs)
+deque<T, A>& deque<T, A> :: operator=(deque& rhs)
 {
    if (this == &rhs)
       return *this;
@@ -330,7 +330,7 @@ deque<T, A>& deque<T, A>::operator=(deque& rhs)
  * add an element to the back of the deque
  ****************************************/
 template <typename T, typename A>
-void deque<T, A>::push_back(const T& t)
+void deque<T, A> :: push_back(const T& t)
 {
    // 1. Reallocate the array of blocks as needed
    int icTail = (numElements == 0)
@@ -361,7 +361,7 @@ void deque<T, A>::push_back(const T& t)
  * add an element to the back of the deque
  ****************************************/
 template <typename T, typename A>
-void deque <T, A> ::push_back(T && t)
+void deque <T, A> :: push_back(T && t)
 {
    // 1. Reallocate the array of blocks as needed
    int icTail = (numElements == 0)
@@ -382,7 +382,7 @@ void deque <T, A> ::push_back(T && t)
    }
 
    // 3. Assign the value into the block
-   alloc.construct(&data[ib][icFromID(numElements)], std::move(t));
+   alloc.construct(&data[ib][icFromID(numElements)], std :: move(t));
 
    numElements++;
 }
@@ -392,7 +392,7 @@ void deque <T, A> ::push_back(T && t)
  * add an element to the front of the deque
  ****************************************/
 template <typename T, typename A>
-void deque<T, A>::push_front(const T& t)
+void deque<T, A> :: push_front(const T& t)
 {
    // Handling an empty deque
    if (numElements == 0)
@@ -446,7 +446,7 @@ void deque<T, A>::push_front(const T& t)
  * add an element to the front of the deque
  ****************************************/
 template <typename T, typename A>
-void deque <T, A> ::push_front(T&& t)
+void deque <T, A> :: push_front(T&& t)
 {
    // Handling an empty deque
    if (numElements == 0)
@@ -461,7 +461,7 @@ void deque <T, A> ::push_front(T&& t)
       data[0] = alloc.allocate(numCells);
 
       iaFront = numCells - 1;
-      alloc.construct(&data[0][iaFront], std::move(t));
+      alloc.construct(&data[0][iaFront], std :: move(t));
 
       numElements = 1;
       return;
@@ -490,7 +490,7 @@ void deque <T, A> ::push_front(T&& t)
    }
 
    // 4. Assign the value into the block
-   alloc.construct(&data[ib][icFromID(0)], std::move(t));
+   alloc.construct(&data[ib][icFromID(0)], std :: move(t));
 
    numElements++;
 }
@@ -500,7 +500,7 @@ void deque <T, A> ::push_front(T&& t)
  * Remove all the elements from a deque
  ****************************************/
 template <typename T, typename A>
-void deque <T, A> ::clear()
+void deque <T, A> :: clear()
 {
    for (int id = 0; id < numElements; id++)
    {
@@ -522,7 +522,7 @@ void deque <T, A> ::clear()
  * Remove the front element from a deque
  ****************************************/
 template <typename T, typename A>
-void deque<T, A>::pop_front()
+void deque<T, A> :: pop_front()
 {
    // id of the element to remove (always 0 for pop_front)
    int idRemove = 0;
@@ -558,7 +558,7 @@ void deque<T, A>::pop_front()
  * Remove the back element from a deque
  ****************************************/
 template <typename T, typename A>
-void deque<T, A>::pop_back()
+void deque<T, A> :: pop_back()
 {
    // id of the element to remove
    int idRemove = numElements - 1;
@@ -591,7 +591,7 @@ void deque<T, A>::pop_back()
  * Remove all the elements from a deque
  ****************************************/
 template <typename T, typename A>
-void deque<T, A>::reallocate(int numBlocksNew)
+void deque<T, A> :: reallocate(int numBlocksNew)
 {
    // 1. Allocate a new array of pointers
    T** dataNew = nullptr;
@@ -633,7 +633,7 @@ void deque<T, A>::reallocate(int numBlocksNew)
       for (int ic = 0; ic <= icBackEnd; ++ic)
       {
          alloc.construct(&dataNew[ibBackNew][ic],
-            std::move(data[ibBackOld][ic]));
+            std :: move(data[ibBackOld][ic]));
          alloc.destroy(&data[ibBackOld][ic]);
       }
 
@@ -657,7 +657,7 @@ void deque<T, A>::reallocate(int numBlocksNew)
  * return TRUE if all the blocks are filled
  ****************************************/
 template <typename T, typename A>
-bool deque <T, A> ::isAllBlocksFilled() const
+bool deque <T, A> :: isAllBlocksFilled() const
 {
    // We have no choice but to check each block looking for a NULLPTR
    for (size_t ib = 0; ib < numBlocks; ib++)
