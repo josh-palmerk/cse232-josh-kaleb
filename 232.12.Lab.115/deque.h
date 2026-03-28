@@ -276,6 +276,7 @@ deque <T, A> & deque <T, A> :: operator = (deque & rhs)
 template <typename T, typename A>
 void deque <T, A> ::push_back(const T& t)
 {
+
 }
 
 /*****************************************
@@ -295,6 +296,7 @@ void deque <T, A> ::push_back(T && t)
 template <typename T, typename A>
 void deque <T, A> ::push_front(const T& t)
 {
+
 }
 
 /*****************************************
@@ -304,6 +306,7 @@ void deque <T, A> ::push_front(const T& t)
 template <typename T, typename A>
 void deque <T, A> ::push_front(T&& t)
 {
+
 }
 
 /*****************************************
@@ -402,9 +405,65 @@ void deque<T, A>::pop_back()
  * Remove all the elements from a deque
  ****************************************/
 template <typename T, typename A>
-void deque <T, A> :: reallocate(int numBlocksNew)
+void deque<T, A>::reallocate(int numBlocksNew)
 {
+   // 1. Allocate a new array of pointers
+   T** dataNew = nullptr;
+   if (numBlocksNew > 0)
+   {
+      dataNew = new T * [numBlocksNew];
+   }
 
+   // 2. Copy over the pointers, unwrapping as we go
+   int ibNew = 0;
+
+   for (int idOld = 0; idOld < static_cast<int>(numElements); idOld += numCells)
+   {
+      int ibOld = ibFromID(idOld);
+      dataNew[ibNew] = data[ibOld];
+      ibNew++;
+   }
+
+   // 3. Set remaining block pointers to NULL
+   while (ibNew < numBlocksNew)
+   {
+      dataNew[ibNew] = nullptr;
+      ibNew++;
+   }
+
+   // 4. If front and back share a block but wrap around, move back block
+   if (numElements > 0 &&
+      ibFromID(0) == ibFromID(numElements - 1) &&
+      icFromID(0) > icFromID(numElements - 1))
+   {
+      int ibFrontOld = ibFromID(0);
+      int ibBackOld = ibFromID(numElements - 1);
+
+      int ibBackNew = numElements / numCells;
+
+      dataNew[ibBackNew] = alloc.allocate(numCells);
+
+      int icBackEnd = icFromID(numElements - 1);
+      for (int ic = 0; ic <= icBackEnd; ++ic)
+      {
+         alloc.construct(&dataNew[ibBackNew][ic],
+            std::move(data[ibBackOld][ic]));
+         alloc.destroy(&data[ibBackOld][ic]);
+      }
+
+      alloc.deallocate(data[ibBackOld], numCells);
+   }
+
+   // 5. Replace old data with new data
+   if (data)
+   {
+      delete[] data;
+   }
+
+   data = dataNew;
+   numBlocks = numBlocksNew;
+
+   iaFront = iaFront % numCells;
 }
 
 } // namespace custom
