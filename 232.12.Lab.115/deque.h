@@ -139,6 +139,8 @@ private:
        return iaFromID(id) % numCells;
    }
 
+   bool isAllBlocksFilled() const;
+
    // reallocate
    void reallocate(int numBlocksNew);
 
@@ -274,9 +276,30 @@ deque <T, A> & deque <T, A> :: operator = (deque & rhs)
  * add an element to the back of the deque
  ****************************************/
 template <typename T, typename A>
-void deque <T, A> ::push_back(const T& t)
+void deque<T, A>::push_back(const T& t)
 {
+   // 1. Reallocate the array of blocks as needed
+   int icTail = (numElements == 0)
+      ? numCells - 1
+      : icFromID(numElements - 1);
 
+   if (isAllBlocksFilled() && icTail == numCells - 1)
+   {
+      int newNumBlocks = (numBlocks == 0 ? 1 : numBlocks * 2);
+      reallocate(newNumBlocks);
+   }
+
+   // 2. Allocate a new block as needed
+   int ib = ibFromID(numElements);
+   if (data[ib] == nullptr)
+   {
+      data[ib] = alloc.allocate(numCells);
+   }
+
+   // 3. Assign the value into the block
+   alloc.construct(&data[ib][icFromID(numElements)], t);
+
+   numElements++;
 }
 
 /*****************************************
@@ -286,7 +309,28 @@ void deque <T, A> ::push_back(const T& t)
 template <typename T, typename A>
 void deque <T, A> ::push_back(T && t)
 {
+   // 1. Reallocate the array of blocks as needed
+   int icTail = (numElements == 0)
+      ? numCells - 1
+      : icFromID(numElements - 1);
 
+   if (isAllBlocksFilled() && icTail == numCells - 1)
+   {
+      int newNumBlocks = (numBlocks == 0 ? 1 : numBlocks * 2);
+      reallocate(newNumBlocks);
+   }
+
+   // 2. Allocate a new block as needed
+   int ib = ibFromID(numElements);
+   if (data[ib] == nullptr)
+   {
+      data[ib] = alloc.allocate(numCells);
+   }
+
+   // 3. Assign the value into the block
+   alloc.construct(&data[ib][icFromID(numElements)], std::move(t));
+
+   numElements++;
 }
 
 /*****************************************
@@ -294,9 +338,53 @@ void deque <T, A> ::push_back(T && t)
  * add an element to the front of the deque
  ****************************************/
 template <typename T, typename A>
-void deque <T, A> ::push_front(const T& t)
+void deque<T, A>::push_front(const T& t)
 {
+   // Handling an empty deque
+   if (numElements == 0)
+   {
+      if (numBlocks == 0)
+      {
+         numBlocks = 1;
+         data = new T * [numBlocks];
+         data[0] = nullptr;
+      }
 
+      data[0] = alloc.allocate(numCells);
+
+      iaFront = numCells - 1;
+      alloc.construct(&data[0][iaFront], t);
+
+      numElements = 1;
+      return;
+   }
+
+   // 1. Reallocate the array of blocks as needed
+   int icFront = icFromID(0);
+
+   if (isAllBlocksFilled() && icFront == 0)
+   {
+      int newNumBlocks = (numBlocks == 0 ? 1 : numBlocks * 2);
+      reallocate(newNumBlocks);
+   }
+
+   // 2. Adjust the front array index, wrapping as needed
+   if (iaFront != 0)
+      iaFront--;
+   else
+      iaFront = numBlocks * numCells - 1;
+
+   // 3. Allocate a new block as needed
+   int ib = ibFromID(0);
+   if (data[ib] == nullptr)
+   {
+      data[ib] = alloc.allocate(numCells);
+   }
+
+   // 4. Assign the value into the block
+   alloc.construct(&data[ib][icFromID(0)], t);
+
+   numElements++;
 }
 
 /*****************************************
@@ -306,7 +394,51 @@ void deque <T, A> ::push_front(const T& t)
 template <typename T, typename A>
 void deque <T, A> ::push_front(T&& t)
 {
+   // Handling an empty deque
+   if (numElements == 0)
+   {
+      if (numBlocks == 0)
+      {
+         numBlocks = 1;
+         data = new T * [numBlocks];
+         data[0] = nullptr;
+      }
 
+      data[0] = alloc.allocate(numCells);
+
+      iaFront = numCells - 1;
+      alloc.construct(&data[0][iaFront], std::move(t));
+
+      numElements = 1;
+      return;
+   }
+
+   // 1. Reallocate the array of blocks as needed
+   int icFront = icFromID(0);
+
+   if (isAllBlocksFilled() && icFront == 0)
+   {
+      int newNumBlocks = (numBlocks == 0 ? 1 : numBlocks * 2);
+      reallocate(newNumBlocks);
+   }
+
+   // 2. Adjust the front array index, wrapping as needed
+   if (iaFront != 0)
+      iaFront--;
+   else
+      iaFront = numBlocks * numCells - 1;
+
+   // 3. Allocate a new block as needed
+   int ib = ibFromID(0);
+   if (data[ib] == nullptr)
+   {
+      data[ib] = alloc.allocate(numCells);
+   }
+
+   // 4. Assign the value into the block
+   alloc.construct(&data[ib][icFromID(0)], std::move(t));
+
+   numElements++;
 }
 
 /*****************************************
@@ -464,6 +596,20 @@ void deque<T, A>::reallocate(int numBlocksNew)
    numBlocks = numBlocksNew;
 
    iaFront = iaFront % numCells;
+}
+
+/*****************************************
+ * DEQUE :: IS ALL BLOCKS FILLED?
+ * return TRUE if all the blocks are filled
+ ****************************************/
+template <typename T, typename A>
+bool deque <T, A> ::isAllBlocksFilled() const
+{
+   // We have no choice but to check each block looking for a NULLPTR
+   for (size_t ib = 0; ib < numBlocks; ib++)
+      if (nullptr == data[ib])
+         return false;
+   return true;
 }
 
 } // namespace custom
