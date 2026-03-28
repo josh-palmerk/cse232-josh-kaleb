@@ -43,24 +43,24 @@ public:
 
       // Construct
       test_construct_default();
-      //test_constructCopy_empty();
-      //test_constructCopy_standard();
-      //test_constructCopy_wrapped();
+      test_constructCopy_empty();
+      test_constructCopy_standard();
+      test_constructCopy_wrapped();
 
       // Destruct
-      //test_destruct_default();
-      //test_destruct_emptyBlock();
-      //test_destruct_fullBlock();
-      //test_destruct_partBlock();
-      //test_destruct_twoBlock();
-      //test_destruct_standard();
+      test_destruct_default();
+      test_destruct_emptyBlock();
+      test_destruct_fullBlock();
+      test_destruct_partBlock();
+      test_destruct_twoBlock();
+      test_destruct_standard();
 
       // Assign
-      //test_assign_emptyToEmpty();
-      //test_assign_emptyToStandard();
-      //test_assign_standardToStandard();
-      //test_assign_standardToEmpty();
-      //test_assign_wrapped();
+      test_assign_emptyToEmpty();
+      test_assign_emptyToStandard();
+      test_assign_standardToStandard();
+      test_assign_standardToEmpty();
+      test_assign_wrapped();
 
       // Iterator
       test_iterator_begin_empty();
