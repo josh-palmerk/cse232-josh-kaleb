@@ -51,6 +51,12 @@ public:
    deque(deque & rhs);
    ~deque()
    {
+      clear();
+      if (data)
+      {
+         delete[] data;
+         data = nullptr;
+      }
    }
 
    //
