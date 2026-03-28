@@ -74,29 +74,49 @@ public:
    // 
    // Access
    //
-   T & front()       
-   { 
-      return *(new T);
-   }
-   const T & front() const 
+   T& front()
    {
-      return *(new T);
+      assert(numElements > 0);
+      int ib = ibFromID(0);
+      assert(data[ib] != nullptr);
+      return data[ib][icFromID(0)];
    }
-   T & back()
+   const T& front() const
    {
-      return *(new T);
+      assert(numElements > 0);
+      int ib = ibFromID(0);
+      assert(data[ib] != nullptr);
+      return data[ib][icFromID(0)];
    }
-   const T & back() const
+   T& back()
    {
-      return *(new T);
+      assert(numElements > 0);
+      int id = numElements - 1;
+      int ib = ibFromID(id);
+      assert(data[ib] != nullptr);
+      return data[ib][icFromID(id)];
    }
-   T & operator[](int id)
+   const T& back() const
    {
-      return data[ibFromID(id)][icFromID(id)];
+      assert(numElements > 0);
+      int id = numElements - 1;
+      int ib = ibFromID(id);
+      assert(data[ib] != nullptr);
+      return data[ib][icFromID(id)];
    }
-   const T & operator[](int id) const
+   T& operator[](int id)
    {
-      return data[ibFromID(id)][icFromID(id)];
+      assert(id >= 0 && id < static_cast<int>(numElements));
+      int ib = ibFromID(id);
+      assert(data[ib] != nullptr);
+      return data[ib][icFromID(id)];
+   }
+   const T& operator[](int id) const
+   {
+      assert(id >= 0 && id < static_cast<int>(numElements));
+      int ib = ibFromID(id);
+      assert(data[ib] != nullptr);
+      return data[ib][icFromID(id)];
    }
 
    //
@@ -255,9 +275,10 @@ private:
  * call the copy constructor on each element
  ****************************************/
 template <typename T, typename A>
-deque <T, A> ::deque(deque& rhs) 
+deque<T, A>::deque(deque& rhs): deque()
 {
-
+   for (int i = 0; i < rhs.numElements; ++i)
+      push_back(rhs[i]);
 }
 
 /*****************************************
@@ -266,8 +287,35 @@ deque <T, A> ::deque(deque& rhs)
  * call the copy constructor on each element
  ****************************************/
 template <typename T, typename A>
-deque <T, A> & deque <T, A> :: operator = (deque & rhs)
+deque<T, A>& deque<T, A>::operator=(deque& rhs)
 {
+   if (this == &rhs)
+      return *this;
+
+   auto itLHS = begin();
+   auto itRHS = rhs.begin();
+
+   // 1. Assign overlapping elements
+   while (itLHS != end() && itRHS != rhs.end())
+   {
+      *itLHS = *itRHS;
+      ++itLHS;
+      ++itRHS;
+   }
+
+   // 2. Erase leftover LHS elements
+   while (itLHS != end())
+   {
+      pop_back();
+   }
+
+   // 3. Append leftover RHS elements
+   while (itRHS != rhs.end())
+   {
+      push_back(*itRHS);
+      ++itRHS;
+   }
+
    return *this;
 }
 

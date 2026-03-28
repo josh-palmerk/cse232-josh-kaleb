@@ -74,19 +74,19 @@ public:
       test_iterator_difference_standard();
 
       // Access
-      //test_back_readStandard();
-      //test_back_readWrapped();
-      //test_back_readReadOnly();
-      //test_back_writeStandard();
-      //test_back_writeWrapped();
-      //test_front_readStandard();
-      //test_front_writeStandard();
-      //test_front_readReadOnly();
-      //test_subscript_readStandard();
-      //test_subscript_readWrapped();
-      //test_subscript_readReadOnly();
-      //test_subscript_writeStandard();
-      //test_subscript_writeWrapped();
+      test_back_readStandard();
+      test_back_readWrapped();
+      test_back_readReadOnly();
+      test_back_writeStandard();
+      test_back_writeWrapped();
+      test_front_readStandard();
+      test_front_writeStandard();
+      test_front_readReadOnly();
+      test_subscript_readStandard();
+      test_subscript_readWrapped();
+      test_subscript_readReadOnly();
+      test_subscript_writeStandard();
+      test_subscript_writeWrapped();
 
       // Insert
       test_pushback_empty();
