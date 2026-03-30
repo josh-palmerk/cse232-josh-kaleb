@@ -125,19 +125,19 @@ public:
    //
    size_t size() const 
    { 
-      return 99;
+      return numElements;
    }
    bool empty() const 
    { 
-      return false;
+	  return numElements == 0;
    }
    size_t bucket_count() const 
    { 
-      return 100;
+      return buckets->size();
    }
    size_t bucket_size(size_t i) const
    {
-      return 99;
+      return 99; //unsure how to calculate this. max(allBuckets?)
    }
 
 private:
@@ -178,6 +178,10 @@ public:
    //
    iterator& operator = (const iterator& rhs)
    {
+	  this->pBucket = rhs.pBucket;
+	  this->pBucketEnd = rhs.pBucketEnd;
+	  this->itList = rhs.itList;
+
       return *this;
    }
 
