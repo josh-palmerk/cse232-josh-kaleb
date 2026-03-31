@@ -23,6 +23,7 @@
 #include <memory>     // for std::allocator
 #include <functional> // for std::hash
 #include <cmath>      // for std::ceil
+#include <utility>    // for std::swap
    
 
 class TestHash;             // forward declaration for Hash unit tests
@@ -41,18 +42,31 @@ public:
    //
    // Construct
    //
-   unordered_set()
+   unordered_set() : numElements(0)
    {
    }
-   unordered_set(unordered_set&  rhs) 
+   unordered_set(unordered_set&  rhs) : numElements(0)
    {
+      for (size_t i = 0; i < 10; ++i)
+      {
+         for (auto it = rhs.buckets[i].begin(); it != rhs.buckets[i].end(); ++it)
+         {
+            buckets[i].push_back(*it);
+            ++numElements;
+         }
+      }
    }
-   unordered_set(unordered_set&& rhs) 
+   unordered_set(unordered_set&& rhs) : numElements(0)
    {
+      swap(rhs);
    }
    template <class Iterator>
-   unordered_set(Iterator first, Iterator last)
+   unordered_set(Iterator first, Iterator last) : numElements(0)
    {
+      for (auto it = first; it != last; ++it)
+      {
+//         insert(it);
+      }
    }
 
    //
@@ -72,6 +86,9 @@ public:
    }
    void swap(unordered_set& rhs)
    {
+      std::swap(numElements, rhs.numElements);
+      for (size_t i = 0; i < 10; ++i)
+         custom::swap(buckets[i], rhs.buckets[i]);
    }
 
    // 
