@@ -207,11 +207,11 @@ public:
    //
    bool operator != (const iterator& rhs) const 
    { 
-      return true;
+	  return this->pBucket != rhs.pBucket || this->pBucketEnd != rhs.pBucketEnd || this->itList != rhs.itList;
    }
    bool operator == (const iterator& rhs) const 
    { 
-      return true;
+	  return this->pBucket == rhs.pBucket && this->pBucketEnd == rhs.pBucketEnd && this->itList == rhs.itList;
    }
 
    // 
@@ -261,6 +261,7 @@ public:
    }
    local_iterator(const local_iterator& rhs) 
    { 
+	  this->itList = rhs.itList;
    }
 
    //
@@ -268,6 +269,7 @@ public:
    //
    local_iterator& operator = (const local_iterator& rhs)
    {
+	  this->itList = rhs.itList;
       return *this;
    }
 
@@ -276,11 +278,11 @@ public:
    //
    bool operator != (const local_iterator& rhs) const
    {
-      return true;
+	  return itList != rhs.itList;
    }
    bool operator == (const local_iterator& rhs) const
    {
-      return true;
+	  return itList == rhs.itList;
    }
 
    // 
@@ -359,6 +361,7 @@ typename unordered_set <T> ::iterator & unordered_set<T>::iterator::operator ++ 
 template <typename T>
 void swap(unordered_set<T>& lhs, unordered_set<T>& rhs)
 {
+	lhs.swap(rhs);
 }
 
 }
