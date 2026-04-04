@@ -124,18 +124,18 @@ public:
    //
    size_t bucket(const T& t)
    {
-      return 99;
+      return std::hash<T>{}(t) % 10;
    }
    iterator find(const T& t);
 
-   //   
+   //
    // Insert
    //
    custom::pair<iterator, bool> insert(const T& t);
    void insert(const std::initializer_list<T> & il);
 
 
-   // 
+   //
    // Remove
    //
    void clear() noexcept
@@ -344,11 +344,28 @@ typename unordered_set <T> ::iterator unordered_set<T>::erase(const T& t)
 template <typename T>
 custom::pair<typename custom::unordered_set<T>::iterator, bool> unordered_set<T>::insert(const T& t)
 {
-   return custom::pair<custom::unordered_set<T>::iterator, bool>(iterator(), true);
+   size_t iBucket = bucket(t);
+   for (auto it = buckets[iBucket].begin(); it != buckets[iBucket].end(); ++it)
+   {
+      if (*it == t)
+         return custom::pair<iterator, bool>(iterator(buckets + iBucket, buckets + 10, it), false);
+   }
+   buckets[iBucket].push_back(t);
+   ++numElements;
+
+   auto itLast = buckets[iBucket].begin();
+   auto it = itLast;
+   for (; it != buckets[iBucket].end(); ++it)
+      itLast = it;
+
+   return custom::pair<iterator, bool>(iterator(buckets + iBucket, buckets + 10, itLast), true);
+
 }
 template <typename T>
 void unordered_set<T>::insert(const std::initializer_list<T> & il)
 {
+   for (const auto & value : il)
+      insert(value);
 }
 
 /*****************************************
