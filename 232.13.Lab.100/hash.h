@@ -334,7 +334,14 @@ private:
 template <typename T>
 typename unordered_set <T> ::iterator unordered_set<T>::erase(const T& t)
 {
-   return iterator();
+   auto itErase = find(t);
+   if (itErase == end())
+      return itErase;
+   auto itReturn = itErase;
+   ++itReturn;
+   buckets[itErase.pBucket - buckets].erase(itErase.itList);
+   --numElements;
+   return itReturn;
 }
 
 /*****************************************
