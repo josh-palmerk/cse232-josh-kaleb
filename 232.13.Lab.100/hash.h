@@ -140,6 +140,9 @@ public:
    //
    void clear() noexcept
    {
+      for (size_t i = 0; i < 10; ++i)
+         buckets[i].clear();
+      numElements = 0;
    }
    iterator erase(const T& t);
 
