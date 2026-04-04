@@ -72,10 +72,29 @@ public:
    //
    unordered_set& operator=(unordered_set& rhs)
    {
+      this->numElements = rhs.numElements;
+      for (size_t i = 0; i < 10; ++i)
+         {
+         this->buckets[i].clear();
+         for (auto it = rhs.buckets[i].begin(); it != rhs.buckets[i].end(); ++it)
+         {
+            this->buckets[i].push_back(*it);
+         }
+      }
       return *this;
    }
    unordered_set& operator=(unordered_set&& rhs)
    {
+      this->numElements = std::move(rhs.numElements);
+      for (size_t i = 0; i < 10; ++i)
+      {
+         this->buckets[i].clear();
+         for (auto it = rhs.buckets[i].begin(); it != rhs.buckets[i].end(); ++it)
+         {
+            this->buckets[i].push_back(std::move(*it));
+         }
+      }
+      rhs.clear();
       return *this;
    }
    unordered_set& operator=(const std::initializer_list<T>& il)
