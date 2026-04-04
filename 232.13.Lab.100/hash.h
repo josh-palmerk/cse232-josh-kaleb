@@ -375,7 +375,17 @@ void unordered_set<T>::insert(const std::initializer_list<T> & il)
 template <typename T>
 typename unordered_set <T> ::iterator unordered_set<T>::find(const T& t)
 {
-   return iterator();
+   size_t iBucket = bucket(t);
+   auto itList = buckets[iBucket].begin();
+   for (; itList != buckets[iBucket].end(); ++itList)
+   {
+      if (*itList == t)
+         break;
+   }
+   if (itList != buckets[iBucket].end())
+      return iterator(buckets + iBucket, buckets + 10, itList);
+   else
+      return end();
 }
 
 /*****************************************
