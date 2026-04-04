@@ -64,9 +64,7 @@ public:
    unordered_set(Iterator first, Iterator last) : numElements(0)
    {
       for (auto it = first; it != last; ++it)
-      {
-//         insert(it);
-      }
+         insert(*it);
    }
 
    //
@@ -98,19 +96,27 @@ public:
    class local_iterator;
    iterator begin()
    {
-      return iterator();
+      for (int i = 0; i < 10; ++i)
+      {
+         if (!buckets[i].empty())
+         {
+            return iterator(buckets + i, buckets + 10, buckets[i].begin());
+         }
+      }
+      return end();
    }
    iterator end()
    {
-      return iterator();
+      return iterator(&buckets[10], &buckets[10], buckets[0].end());
    }
+
    local_iterator begin(size_t iBucket)
    {
-      return local_iterator();
+      return local_iterator(buckets[iBucket].begin());
    }
    local_iterator end(size_t iBucket)
    {
-      return local_iterator();
+      return local_iterator(buckets[iBucket].end());
    }
 
    //
@@ -154,7 +160,7 @@ public:
    }
    size_t bucket_size(size_t i) const
    {
-      return 99; //unsure how to calculate this. max(allBuckets?)
+      return buckets[i].size();
    }
 
 private:
@@ -184,10 +190,16 @@ public:
    iterator(typename custom::list<T>* pBucket,
             typename custom::list<T>* pBucketEnd,
             typename custom::list<T>::iterator itList)
+            : pBucket(pBucket),
+            pBucketEnd(pBucketEnd),
+            itList(itList)
    {
    }
-   iterator(const iterator& rhs) 
-   { 
+   iterator(const iterator& rhs)
+            : pBucket(rhs.pBucket),
+            pBucketEnd(rhs.pBucketEnd),
+            itList(rhs.itList)
+   {
    }
 
    //
@@ -219,7 +231,7 @@ public:
    //
    T& operator * ()
    {
-      return *(new T());
+      return *itList;
    }
 
    //
@@ -228,7 +240,9 @@ public:
    iterator& operator ++ ();
    iterator operator ++ (int postfix)
    {
-      return *this;
+      iterator temp(*this);
+      ++itList;
+      return temp;
    }
 
 private:
@@ -256,12 +270,11 @@ public:
    local_iterator()  
    {
    }
-   local_iterator(const typename custom::list<T>::iterator& itList) 
+   local_iterator(const typename custom::list<T>::iterator& itList) : itList(itList)
    {
    }
-   local_iterator(const local_iterator& rhs) 
+   local_iterator(const local_iterator& rhs) : itList(rhs.itList)
    { 
-	  this->itList = rhs.itList;
    }
 
    //
@@ -290,7 +303,7 @@ public:
    //
    T& operator * ()
    {
-      return *(new T());
+      return *itList;
    }
 
    // 
@@ -298,12 +311,16 @@ public:
    //
    local_iterator& operator ++ ()
    {
+      ++itList;
       return *this;
    }
    local_iterator operator ++ (int postfix)
    {
-      return *this;
+      iterator temp(*this);
+      ++itList;
+      return temp;
    }
+
 
 private:
    typename list<T>::iterator itList;
@@ -349,10 +366,27 @@ typename unordered_set <T> ::iterator unordered_set<T>::find(const T& t)
  * Advance by one element in an unordered set
  ****************************************/
 template <typename T>
-typename unordered_set <T> ::iterator & unordered_set<T>::iterator::operator ++ ()
+typename unordered_set <T> ::iterator & unordered_set<T>::iterator::operator++()
 {
+   ++itList;
+
+   while (pBucket != pBucketEnd && itList == pBucket->end())
+   {
+      ++pBucket;
+
+      if (pBucket == pBucketEnd)
+         break;
+
+      if (!pBucket->empty())
+      {
+         itList = pBucket->begin();
+         return *this;
+      }
+   }
+
    return *this;
 }
+
 
 /*****************************************
  * SWAP
